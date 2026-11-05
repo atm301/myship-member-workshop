@@ -1,0 +1,132 @@
+<!-- ===================== 成果發表 ===================== -->
+<section class="tab-section" data-tab="final"><div class="wrap">
+  <span class="sec-tag">成果發表　16:30 到 16:50</span>
+  <h2 class="sec-title">算得出回購：<span class="em">把三份成果整合成一檔活動</span></h2>
+  <p class="lead">三段實作各做了一塊，最後把它們接成一個可以執行、可以量的 30 天計畫。</p>
+
+  <div class="grid g4">
+    <div class="card o"><h3>✅ 成果 1</h3><p>三層會員策略圖</p></div>
+    <div class="card a"><h3>✅ 成果 2</h3><p>四週行事曆＋喚醒推播</p></div>
+    <div class="card g"><h3>✅ 成果 3</h3><p>15 秒企劃＋素材＋文案</p></div>
+    <div class="card dk"><h3>🎯 成果 4</h3><p>30 天回購行動方案</p></div>
+  </div>
+
+  <div class="callout"><b>上傳到成發 LINE 社群的格式：</b>【品牌名】成果 1 至 4，截圖或檔案直接貼上，附一句話「我回去第一件要做的事」。成果 4 用提示詞 P10 產出。小圭會從社群挑幾位現場點評。
+  <div class="hero-btns"><button class="btn btn-primary btn-sm" type="button" onclick="goPrompt('p10')">🤖 P10 30 天行動方案</button></div></div>
+
+  <h3 class="h3">📝 30 天回購行動方案：先填這五格，再丟給 GPT 展開</h3>
+  <p class="lead">五格填完就是一份可以交的草案。填完可以複製貼給 GPT（接在 P10 後面），或直接當成果 4 交出去。</p>
+  <div class="fill">
+    <label for="pl_name">活動名稱</label>
+    <input id="pl_name" type="text" maxlength="40" placeholder="例如：冬季限定回歸計畫">
+    <label for="pl_who">對象層級與人數</label>
+    <input id="pl_who" type="text" maxlength="60" placeholder="例如：沉睡客 29 人，先從累積金額最高的 10 位開始">
+    <label for="pl_offer">誘因＋期限</label>
+    <input id="pl_offer" type="text" maxlength="80" placeholder="例如：回歸碼 BACK50 折 50 元，搭配 11/30 前免運券">
+    <label for="pl_ch">管道與時程</label>
+    <input id="pl_ch" type="text" maxlength="80" placeholder="例如：LINE 分眾推播，11/16 週一晚上 8 點發第一則">
+    <label for="pl_kpi">成功指標（要量什麼）</label>
+    <input id="pl_kpi" type="text" maxlength="80" placeholder="例如：喚醒回購率 10%、優惠碼使用 15 次、點擊率 20%">
+    <label for="pl_first">我回去第一件要做的事</label>
+    <input id="pl_first" type="text" maxlength="60" placeholder="例如：今晚就把訂單匯出來，貼上 P1 分群">
+    <div class="hero-btns" style="margin-top:12px">
+      <button class="btn btn-primary btn-sm" id="plCopy" type="button">📋 複製方案</button>
+      <button class="btn btn-ghost btn-sm" id="plSend" type="button">📤 當成果 4 送出</button>
+      <span class="muted-note" id="plStatus"></span>
+    </div>
+    <div id="plOut" class="out">填完上面，這裡會出現可以複製的 30 天行動方案草案。</div>
+  </div>
+
+  <h3 class="h3">回家後的 30 天行動清單</h3>
+  <div class="grid g4">
+    <div class="card o"><h3>第 1 週　11/9 起</h3><p>匯出訂單、分好三層；LINE 好友貼上三層標籤；設定 VIP 碼與沉睡客回歸碼。</p></div>
+    <div class="card a"><h3>第 2 週　11/16 起</h3><p>發出第一則沉睡客喚醒推播；搭配 11/30 前可用的平台免運券；記錄發送人數與點擊。</p></div>
+    <div class="card g"><h3>第 3 週　11/23 起</h3><p>拍 3 支 15 秒影片，VIP、回購客、沉睡客各一支；附上賣貨便購買連結。</p></div>
+    <div class="card dk"><h3>第 4 週　11/30 起</h3><p>算喚醒回購率；看優惠碼使用次數；調整門檻，排下一個月。</p></div>
+  </div>
+  <div class="callout ok"><b>喚醒回購率 ＝ 推播後 14 天內下單的人數 ÷ 收到推播的人數。</b>每個月算一次，就知道哪一層、哪種誘因最有效。</div>
+
+  <h3 class="h3">📊 喚醒回購率試算</h3>
+  <div class="fill">
+    <label for="kp_sent">推播人數</label>
+    <input id="kp_sent" type="number" min="0" step="10" value="150">
+    <label for="kp_click">點擊人數</label>
+    <input id="kp_click" type="number" min="0" step="1" value="30">
+    <label for="kp_buy">推播後 14 天內下單人數</label>
+    <input id="kp_buy" type="number" min="0" step="1" value="12">
+    <label for="kp_aov">客單價（元）</label>
+    <input id="kp_aov" type="number" min="0" step="10" value="600">
+    <div id="kpOut" class="out">填好四格，這裡會算出喚醒回購率、點擊率與這一檔帶回多少營業額。</div>
+  </div>
+
+  <h3 class="h3">✅ 交件前自我檢核</h3>
+  <div id="finalChk"></div>
+  <div class="callout" id="finalVerdict">五項都打勾，就可以交件了。</div>
+</div></section>
+
+<!-- ===================== 練習檔與工具 ===================== -->
+<section class="tab-section" data-tab="files"><div class="wrap">
+  <span class="sec-tag">整天都會用到</span>
+  <h2 class="sec-title">練習檔與工具：<span class="em">下載、開啟、課後也還在</span></h2>
+  <p class="lead">沒帶自己訂單的人，用這份練習資料就能完成三段實作。這一頁的東西，課後都還在。</p>
+
+  <h3 class="h3">📥 練習用訂單資料（已去識別化）</h3>
+  <p class="lead">虛構的手作甜點店，<b>80 位會員</b>，計算基準日 2026/11/6。欄位就是上傳給 GPT 的那五欄，直接拿去跑 P1、P2。</p>
+  <div class="dlgrid">
+    <div class="dl">
+      <div class="ic">📊</div>
+      <div class="nm">練習用訂單資料.csv</div>
+      <div class="ds">手機和電腦都好開，<b>直接拖進 ChatGPT 或 Gemini 就能分析</b>。建議用這個。</div>
+      <div class="sz">CSV · 80 筆 · UTF-8（含 BOM，Excel 開不會亂碼）</div>
+      <a class="btn btn-primary btn-sm" href="files/practice-orders.csv" download="練習用訂單資料_去識別化.csv">⬇️ 下載 CSV</a>
+    </div>
+    <div class="dl">
+      <div class="ic">📗</div>
+      <div class="nm">練習用訂單資料.xlsx</div>
+      <div class="ds">原始 Excel 檔，有「訂單資料」和「說明」兩個工作表。想先用 Excel 看一眼的用這個。</div>
+      <div class="sz">Excel · 80 筆 · 2 個工作表</div>
+      <a class="btn btn-ghost btn-sm" href="files/practice-orders.xlsx" download="練習用訂單資料_去識別化.xlsx">⬇️ 下載 Excel</a>
+    </div>
+    <div class="dl">
+      <div class="ic">📋</div>
+      <div class="nm">直接複製到剪貼簿</div>
+      <div class="ds">不想下載檔案？按一下，整份 80 筆就在剪貼簿裡，<b>貼進 ChatGPT 對話框也能分析</b>。</div>
+      <div class="sz">純文字 · CSV 格式</div>
+      <button class="btn btn-ghost btn-sm" id="copyCsv" type="button">📋 複製 80 筆資料</button>
+    </div>
+  </div>
+  <div class="callout warn"><b>⚠️ 這是虛構資料，給沒帶自己訂單的人練習用。</b>
+  上課做完之後，回家一定要換成<b>你自己的真實訂單</b>重跑一次，分出來的三層才有意義。換成自己的資料時，記得先刪掉姓名、手機、地址、Email、取貨門市。</div>
+
+  <h3 class="h3">看一眼內容</h3>
+  <div class="prev" id="prevHost"></div>
+  <p class="muted-note" style="margin-top:8px">欄位說明：會員代號（取代姓名與電話的代號）、最近購買日（最後一次下單日期）、購買次數（累積下單次數）、累積金額（新台幣）、主要品類（最常買的商品類別）。</p>
+
+  <h3 class="h3">電商工具整理（一）：賣貨便平台就有的工具</h3>
+  <div class="tw"><table>
+    <tr><th>工具</th><th>可以拿來做什麼</th><th>在哪裡找</th></tr>
+    <tr><td><b>自設優惠券／優惠碼</b></td><td>VIP 專屬碼、回購客滿額券、沉睡客回歸碼</td><td>賣家後台：行銷工具，折價券設定</td></tr>
+    <tr><td><b>平台免運與檔期活動</b></td><td>當成推播理由，例如 11 月感恩慶全站免運</td><td>賣貨便首頁「最新資訊」</td></tr>
+    <tr><td><b>常溫、冷凍店到店</b></td><td>冷凍食品送到門市保存，客人下班再取</td><td>開立賣場時設定物流</td></tr>
+    <tr><td><b>帳務明細與報表匯出</b></td><td>整理訂單、計算回購，交給 GPT 分群前先去識別化</td><td>賣家後台帳務與訂單管理</td></tr>
+    <tr><td><b>自設買家黑名單</b></td><td>擋掉屢次不取件的買家，降低損失</td><td>功能教學：賣家篇</td></tr>
+    <tr><td><b>買家退貨功能</b></td><td>開啟後，買家取貨 7 天內可線上申請退貨</td><td>賣家後台：個人資料管理</td></tr>
+    <tr><td><b>社群e學院</b></td><td>看其他賣家怎麼經營社群與回購</td><td>賣貨便首頁「社群e學院」</td></tr>
+  </table></div>
+
+  <h3 class="h3">電商工具整理（二）：AI 與會員經營工具</h3>
+  <div class="toolgrid" id="toolHost"></div>
+
+  <h3 class="h3">資料出處</h3>
+  <ul class="srcs">
+    <li>賣貨便工作坊宣傳頁：【免費報名】賣貨便首場 AI 實戰工作坊（2026/10/22）。</li>
+    <li>賣貨便最新資訊：11 月感恩慶、7-ELEVEN DAY 購物節、十一月份運費優惠價（2026/10/29 至 11/02 公告）。</li>
+    <li>賣貨便功能教學：行銷工具篇（優惠券／優惠碼）、買家退貨功能、黑名單。</li>
+    <li>賣貨便社群e學院：豆林午茶時光、花蓮林記魚丸、梁雞商行人物專訪。</li>
+    <li>LINE Biz：LINE 官方帳號 2026 年方案調整。</li>
+    <li>Zapier：Gemini Omni（2026/10/26）；創流官網與定價頁（aivideospeed.com，2026/11/5 查詢）。</li>
+    <li>食品安全衛生管理法（全國法規資料庫）。</li>
+    <li>學員問卷：賣貨便 AI 實戰工作坊台北場報名問卷（67 份）。</li>
+    <li>練習用訂單資料為虛構範例，僅供教學練習，並非真實顧客資料。</li>
+  </ul>
+</div></section>

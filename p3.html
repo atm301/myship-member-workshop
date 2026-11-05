@@ -1,0 +1,147 @@
+<!-- ===================== 單元一 ===================== -->
+<section class="tab-section" data-tab="u1"><div class="wrap">
+  <span class="sec-tag">單元一　13:20 到 14:15</span>
+  <h2 class="sec-title">分得出人：<span class="em">不是每個客人都一樣</span></h2>
+  <p class="lead">報名問卷裡，81% 的人最想先「分析不同客戶的購買行為與回購原因」。所以第一段就把客人分清楚，後面兩段才有對象可以講。</p>
+
+  <h3 class="h3">賣場痛點：同一則訊息，發給所有人</h3>
+  <div class="vs">
+    <div class="col bad"><h4>全體群發「全館 85 折」</h4><ul>
+      <li><b>鐵粉：</b>我買這麼多次，跟路人一樣的折扣？</li>
+      <li><b>回購客：</b>又是打折，等下次更便宜再說</li>
+      <li><b>沉睡客：</b>這家是誰？已讀不回，或直接封鎖</li>
+      <li><b>你自己：</b>毛利被吃掉，訊息費也照付</li>
+    </ul></div>
+    <div class="col good"><h4>分層溝通</h4><ul>
+      <li><b>鐵粉：</b>新口味搶先試吃，只留給老朋友</li>
+      <li><b>回購客：</b>上次的蛋糕，配這款茶剛剛好</li>
+      <li><b>沉睡客：</b>好久不見，這週有你會喜歡的新品</li>
+      <li><b>你自己：</b>只發給對的人，訊息少、轉換高</li>
+    </ul></div>
+  </div>
+
+  <h3 class="h3">用三個維度看客人</h3>
+  <div class="grid g3">
+    <div class="card o"><h3>🕐 最近購買</h3><p><b>多久沒買了？</b><br>超過平常回購週期越久，越需要被喚醒。</p></div>
+    <div class="card a"><h3>🔁 購買頻率</h3><p><b>買過幾次？</b><br>買過 2 次以上的人，才算真正的回購客。</p></div>
+    <div class="card g"><h3>💬 互動</h3><p><b>最近有沒有回應你？</b><br>會回 LINE、留言、曬單的人，最容易被帶回來。</p></div>
+  </div>
+  <div class="callout"><b>累積金額是加分題：</b>同樣沉睡，累積買很多的那位，最值得先救回來。</div>
+
+  <div class="poll" id="poll_cycle"></div>
+
+  <h3 class="h3">三層會員：判斷方式、心裡在想什麼、該給什麼</h3>
+  <div class="tw"><table>
+    <tr><th>層級</th><th>判斷方式（範例）</th><th>他心裡在想</th><th>該給的誘因</th><th>溝通語氣</th></tr>
+    <tr><td><b>鐵粉 VIP</b></td><td>90 天內買 3 次以上，或累積金額前 20%</td><td>「我算是老朋友了吧」</td><td>專屬感：新品搶先、限量預留、手寫卡</td><td>像老朋友</td></tr>
+    <tr><td><b>回購客</b></td><td>90 天內買過 1 至 2 次</td><td>「還有什麼值得買？」</td><td>第二件的理由：組合、加購、滿額門檻</td><td>像懂行的店員</td></tr>
+    <tr><td><b>沉睡客</b></td><td>超過回購週期 2 倍沒有再買</td><td>「差點忘了這家」</td><td>回來的理由＋期限：新品、季節、回歸碼</td><td>像想念的問候</td></tr>
+  </table></div>
+  <div class="callout warn"><b>門檻怎麼抓：</b>回購週期＝回購客「兩次購買的平均間隔天數」。甜點、生鮮這類消耗品週期短；飾品、童裝這類耐用品週期長，多看互動和節日。</div>
+
+  <h3 class="h3">🧮 實作前先試一次：三層分群計算機</h3>
+  <p class="lead">不用等 GPT，這裡直接算給你看。預設載入<b>練習用的 80 筆訂單</b>，也可以貼上你自己的資料。
+  調整回購週期，看看三層人數怎麼變，你就知道門檻該抓在哪。</p>
+  <div class="fill">
+    <div class="chips" style="margin-bottom:12px">
+      <button class="chip on" type="button" data-src="demo">📊 用練習資料（80 筆）</button>
+      <button class="chip" type="button" data-src="mine">📋 貼上我自己的</button>
+    </div>
+    <div id="pasteWrap" style="display:none">
+      <label for="pasteData">貼上你的訂單資料（從 Excel 直接複製整塊貼進來，或貼 CSV）</label>
+      <textarea id="pasteData" placeholder="會員代號,最近購買日,購買次數,累積金額,主要品類&#10;A001,2026/09/04,3,1880,磅蛋糕&#10;A002,2026/10/08,3,1810,磅蛋糕"></textarea>
+      <p class="muted-note" style="margin-top:6px">⚠️ 這個計算全部在你的瀏覽器裡跑，資料不會上傳到任何地方。但還是請先刪掉姓名、電話、地址。</p>
+    </div>
+    <label for="cycleIn">你的回購週期（客人大約幾天會想再買一次）</label>
+    <input id="cycleIn" type="number" min="3" max="365" step="1" value="30">
+    <div class="chips" style="margin-top:8px">
+      <button class="chip lite" type="button" data-cyc="14">14 天　生鮮、麵包</button>
+      <button class="chip lite on" type="button" data-cyc="30">30 天　甜點、咖啡</button>
+      <button class="chip lite" type="button" data-cyc="60">60 天　保養品、茶葉</button>
+      <button class="chip lite" type="button" data-cyc="120">120 天　飾品、童裝</button>
+    </div>
+    <div class="hero-btns" style="margin-top:14px">
+      <button class="btn btn-primary btn-sm" id="calcBtn" type="button">🧮 算出我的三層</button>
+      <button class="btn btn-ghost btn-sm" id="calcCopy" type="button">📋 複製結果，貼給 GPT 接著做</button>
+      <span class="muted-note" id="calcStatus"></span>
+    </div>
+    <div id="calcOut"></div>
+  </div>
+
+  <h3 class="h3">三層誘因的設計原則：不要每一層都打折</h3>
+  <div class="grid g3">
+    <div class="card o"><h3>👑 鐵粉 VIP　給專屬感</h3><p>新品搶先試吃、限量款預留名額、出貨附手寫感謝卡、請他命名新口味或投票。<br><b>別用全館折扣，會把鐵粉教成等打折才買。</b></p></div>
+    <div class="card a"><h3>🛍️ 回購客　給第二件的理由</h3><p>組合價、加購價、滿額門檻剛好高一點、搭配吃法用法推薦、買過 A 推薦 B。<br><b>用「更好用」而不是「更便宜」說服。</b></p></div>
+    <div class="card dk"><h3>😴 沉睡客　給回來的理由＋期限</h3><p>新品或季節限定登場、限期回歸碼、搭上平台免運活動、一句真心的好久不見。<br><b>一定要有期限，沒有期限就沒有現在。</b></p></div>
+  </div>
+
+  <div class="poll" id="poll_q2"></div>
+  <div class="poll" id="poll_q3"></div>
+
+  <h3 class="h3">搭配平台工具：賣貨便「自設優惠券／優惠碼」</h3>
+  <div class="vs">
+    <div class="col blue"><h4>三層各發一種碼</h4><ul>
+      <li><b>VIP 專屬碼：</b>只私訊給鐵粉，例如新品搶先價</li>
+      <li><b>回購客滿額券：</b>門檻設在客單價再高一點</li>
+      <li><b>沉睡客回歸碼：</b>限期 2 至 3 週，過期就失效</li>
+    </ul></div>
+    <div class="col"><h4>設定位置</h4><ul style="list-style:none">
+      <li style="padding-left:0">賣家後台 ▸ 行銷工具 ▸ 折價券設定，五個步驟：
+      行銷工具折價券設定 → 建立關於我 → 新建折扣 → 設定時間案型門檻及賣場 → 等待活動生效。</li>
+      <li style="padding-left:0">賣家可自訂時間、案型、門檻和適用賣場；買家可領取折價券或輸入優惠碼。</li>
+    </ul></div>
+  </div>
+  <p class="muted-note">資料出處：賣貨便功能教學「行銷工具篇：賣家自設優惠券／優惠碼活動」。</p>
+
+  <h3 class="h3">賣家案例：豆林午茶時光，老客人一路跟到現在</h3>
+  <div class="callout ok"><b>鐵粉是關係，不是折扣換來的。</b>
+  從家庭廚房時期就支持的老客人，到現在仍持續回購；有熟客因為理念相同，成為品牌的設計師；約九成商品要冷凍，改用賣貨便冷凍店到店，客人下班再取貨。他們最珍惜的事：許多客人最後都變成了朋友。
+  <br><span class="muted-note">資料出處：賣貨便社群e學院〈疫情前創業、解封後重來，豆林午茶時光走出屬於自己的品牌路〉</span></div>
+
+  <h3 class="h3">用付費 GPT 做訂單分群：先去識別化，再上傳</h3>
+  <div class="flow">
+    <span class="n">1 匯出訂單</span><span class="ar">▶</span>
+    <span class="n lite">2 去識別化</span><span class="ar">▶</span>
+    <span class="n lite">3 GPT 分群（P1）</span><span class="ar">▶</span>
+    <span class="n lite">4 回頭比對 LINE 標籤</span>
+  </div>
+  <div class="callout bad"><b>🚫 一定要刪掉：</b>姓名、手機、地址、Email、取貨門市都不要上傳。用代號就能分群，名單再自己對回去。
+  <br><span class="muted-note">資料出處：賣貨便最新資訊：個人資料保護守則公告（2024/01/10）</span></div>
+  <div class="tw sm"><table>
+    <tr><th>會員代號</th><th>最近購買日</th><th>購買次數</th><th>累積金額</th><th>主要品類</th></tr>
+    <tr><td>A001</td><td>2026/09/04</td><td>3</td><td>1,880</td><td>磅蛋糕</td></tr>
+    <tr><td>A002</td><td>2026/10/08</td><td>3</td><td>1,810</td><td>磅蛋糕</td></tr>
+    <tr><td>A003</td><td>2026/10/30</td><td>1</td><td>260</td><td>磅蛋糕</td></tr>
+  </table></div>
+  <p class="muted-note" style="margin-top:8px">上傳前，表格只長這樣，五個欄位就夠了。沒帶自己訂單的人，到「📥 練習檔與工具」下載練習用訂單資料。</p>
+
+  <h3 class="h3">📤 實作一：畫出你的三層會員策略圖</h3>
+  <div class="card o">
+    <h3>⏱️ 10 到 15 分鐘</h3>
+    <ol style="margin:10px 0 0 20px;font-size:.92rem;line-height:1.9">
+      <li>打開付費 ChatGPT（或 Gemini），開一個新對話</li>
+      <li>上傳去識別化的訂單檔；沒有的人，用<button class="btn btn-ghost btn-sm" type="button" onclick="switchTab('files')" style="margin:0 3px">練習用訂單資料</button></li>
+      <li>貼上提示詞 <b>P1</b>：看三層的人數和門檻合不合理，不合理就請它調整</li>
+      <li>貼上提示詞 <b>P2</b>：產出三層會員經營策略圖</li>
+      <li>把策略圖截圖，上傳成發 LINE 社群（<b>品牌名＋成果 1</b>）</li>
+    </ol>
+    <div class="hero-btns">
+      <button class="btn btn-primary btn-sm" type="button" onclick="goPrompt('p1')">🤖 P1 訂單分群</button>
+      <button class="btn btn-ghost btn-sm" type="button" onclick="goPrompt('p2')">🤖 P2 三層策略圖</button>
+      <button class="btn btn-ghost btn-sm" type="button" onclick="switchTab('files')">📥 練習檔</button>
+    </div>
+  </div>
+  <div id="m1Chk"></div>
+
+  <h3 class="h3">不想寫提示詞？免費工具箱幫你做好了</h3>
+  <div class="callout ok"><b>電商營運工具箱 · 會員經營專區</b>：RFM 分群（上傳 CSV，自動分出 VIP 到流失 8 類）、會員指標（回購率、LTV 等 7 大指標）、沉睡喚醒（軟喚醒、誘因、最後通知 3 階段）。免費註冊即可使用，每天 5 次 AI 生成。
+  <div class="hero-btns"><a class="btn btn-primary btn-sm" href="https://ecom.atmarketing.tw/tools/rfm" target="_blank" rel="noopener" data-own="1">開啟 RFM 分群工具 →</a></div></div>
+
+  <h3 class="h3">這一段的重點</h3>
+  <div class="grid g3">
+    <div class="card"><h3><span class="num">1</span>三個維度分三層</h3><p>最近購買、購買頻率、互動，再用累積金額加分。</p></div>
+    <div class="card"><h3><span class="num">2</span>三層給不同誘因</h3><p>VIP 給專屬感、回購客給第二件的理由、沉睡客給回來的理由＋期限。</p></div>
+    <div class="card"><h3><span class="num">3</span>訂單先去識別化</h3><p>只留 5 欄交給 GPT 分群，名單自己對回 LINE 標籤。</p></div>
+  </div>
+  <div class="card dk" style="margin-top:13px"><h3>💡 今天的心得</h3><p>回購不是靠打折換來的，是靠<b>「被記得」</b>換來的。</p></div>
+</div></section>

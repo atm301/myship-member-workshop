@@ -1,0 +1,111 @@
+<!-- ===================== 提示詞庫 ===================== -->
+<section class="tab-section" data-tab="ai"><div class="wrap">
+  <span class="sec-tag">整天都會用到</span>
+  <h2 class="sec-title">10 組提示詞，<span class="em">複製貼上就能用</span></h2>
+  <p class="lead">【　】裡的內容換成你自己的資料。訂單上傳前一定要去識別化，只保留會員代號、最近購買日、購買次數、累積金額、主要品類。</p>
+  <div class="chips" id="pFilter" style="margin-bottom:14px"></div>
+  <div class="callout warn"><b>單元二起，建議在 ChatGPT「專案」（或 Gemini 的 Gem）裡操作</b>，GPT 會記得你的品牌資料，不用每次重講一遍。平台活動日期以賣貨便最新資訊公告為準。</div>
+  <div id="promptHost"></div>
+</div></section>
+
+<!-- ===================== 交作業 ===================== -->
+<section class="tab-section" data-tab="done"><div class="wrap">
+  <span class="sec-tag">隨時都可以交</span>
+  <h2 class="sec-title">交作業：<span class="em">順手留一份在這裡</span></h2>
+  <div class="callout"><b>📣 今天的主要交件管道是成發 LINE 社群</b>（格式：品牌名＋成果編號），小圭會從社群挑作品現場點評。
+  這裡是<b>備援</b>：同時留一份在網站上，課後你自己找得到，講師後台也看得到。兩邊都交最保險。</div>
+
+  <div id="whoBox2"></div>
+
+  <h3 class="h3">📤 上傳你的成果</h3>
+  <div class="up">
+    <label class="lb2" for="subTask">這是哪一份</label>
+    <select id="subTask">
+      <option value="m1">成果 1　三層會員策略圖</option>
+      <option value="m2">成果 2　四週行事曆＋喚醒推播</option>
+      <option value="m3">成果 3　15 秒企劃＋素材＋文案</option>
+      <option value="m4">成果 4　30 天回購行動方案</option>
+      <option value="extra">其他補充或提問</option>
+    </select>
+    <label class="lb2">上傳方式</label>
+    <div class="modeseg" id="subMode">
+      <button type="button" data-m="text" class="on">✍️ 貼文字</button>
+      <button type="button" data-m="image">📷 上傳圖片</button>
+    </div>
+    <div id="subTextWrap" style="margin-top:11px">
+      <label class="lb2" for="subText">內容</label>
+      <textarea id="subText" placeholder="把策略圖、行事曆、腳本、文案貼進來都可以。&#10;⚠️ 含顧客姓名、電話的內容請先去識別化。"></textarea>
+    </div>
+    <div id="subImgWrap" style="display:none;margin-top:11px">
+      <div class="dropz" id="dropz">📷 點這裡選一張圖片<br><small>GPT 畫面截圖、影片截圖都可以（10MB 內）<br>⚠️ 畫面裡有顧客姓名或電話請先遮掉</small></div>
+      <input id="subFile" type="file" accept="image/*" style="display:none">
+    </div>
+    <div class="hero-btns" style="margin-top:13px">
+      <button class="btn btn-primary" id="subBtn" type="button">📤 送出</button>
+      <span class="muted-note" id="subStatus"></span>
+    </div>
+  </div>
+
+  <h3 class="h3">我交過的</h3>
+  <div id="subList"></div>
+
+  <h3 class="h3">📊 全場即時統計<span class="pill-live">🟢 即時</span></h3>
+  <div class="mboard" id="board"></div>
+  <div class="callout" id="myScore" style="margin-top:12px">報到後顯示。</div>
+
+  <h3 class="h3">🎁 帶走</h3>
+  <div class="grid g3">
+    <div class="card o"><h3>📥 練習檔</h3><p>80 筆去識別化訂單，CSV 和 Excel 都有。<br><button class="btn btn-ghost btn-sm" type="button" onclick="switchTab('files')" style="margin-top:7px">去下載</button></p></div>
+    <div class="card a"><h3>🤖 10 組提示詞</h3><p>P1 到 P10，一鍵複製，課後照樣能用。<br><button class="btn btn-ghost btn-sm" type="button" onclick="switchTab('ai')" style="margin-top:7px">去複製</button></p></div>
+    <div class="card g"><h3>🧰 免費電商工具箱</h3><p>210 個免費工具，會員經營專區 16 個。<br><a class="btn btn-ghost btn-sm" href="https://ecom.atmarketing.tw/" target="_blank" rel="noopener" data-own="1" style="margin-top:7px">去逛逛</a></p></div>
+  </div>
+  <div class="hero-btns" style="justify-content:flex-start;margin-top:14px">
+    <button class="btn btn-ghost btn-sm" id="listCopy" type="button">📋 複製今天的重點清單</button>
+    <button class="btn btn-ghost btn-sm" id="printBtn" type="button">🖨️ 列印這一頁</button>
+  </div>
+
+  <div class="card dk" style="margin-top:20px"><h3>從今天開始，讓每一次成交，都有下一次回購。</h3>
+  <p><b>何佳勳（小圭老師）</b>｜圭話行銷股份有限公司｜atmarketing.tw<br>
+  Threads @chia.hsun301｜免費電商工具箱 ecom.atmarketing.tw<br>
+  獲獎同學請寄信到 <b>skyman301@gmail.com</b>，說哪天上課、獲得什麼。</p></div>
+</div></section>
+
+<footer>
+  <div class="wrap">
+    <div><b>從一次成交到持續回購</b>｜賣貨便會員經營 × AI 實戰工作坊｜講師 何佳勳（小圭老師）· 圭話行銷股份有限公司</div>
+    <div class="fl">
+      <a href="https://atmarketing.tw/" target="_blank" rel="noopener" data-own="1">圭話行銷官網</a>
+      <a href="https://ecom.atmarketing.tw/" target="_blank" rel="noopener" data-own="1">免費電商工具箱</a>
+      <a href="https://www.threads.net/@chia.hsun301" target="_blank" rel="noopener">Threads</a>
+    </div>
+    <div class="muted-note" style="color:#bda694;margin-top:10px">本頁會記錄：你填的名字與品牌、互動題答案、檢核表勾選、各個填寫器的內容、上傳的文字與圖片。這些資料存放在講師的課程資料庫，課後由講師統一匯出並清除。<b>請勿在本頁填入顧客姓名、電話或其他個人資料</b>。三層分群計算機、四要素檢查、法規檢查全部在你自己的瀏覽器裡執行，不會上傳。本站使用 Google Analytics 與 Meta Pixel 記錄瀏覽行為。</div>
+  </div>
+</footer>
+
+<div class="hud" id="hud" title="我的進度"><div class="bar"><i id="hudBar"></i></div><span class="gp" id="hudGp">👋 <small id="hudGpSub">點我報到</small></span></div>
+
+<div class="overlay" id="regOverlay" role="dialog" aria-modal="true" aria-labelledby="regTitle"><div class="modal">
+  <h2 id="regTitle">🙋 學員報到</h2>
+  <p class="sub">只要名字就好，不用帳號密碼。互動題答對的分數會記在你的名字下，小禮物也照這個認。</p>
+  <label for="regNick">你的名字或暱稱 *</label>
+  <input id="regNick" type="text" maxlength="20" placeholder="例如：小明，或用暱稱也可以">
+  <label for="regBrand">品牌或賣場名稱（選填）</label>
+  <input id="regBrand" type="text" maxlength="30" placeholder="例如：豆林午茶時光">
+  <label for="regCat">你賣的是什麼（選填）</label>
+  <select id="regCat">
+    <option value="">請選擇</option>
+    <option>食品、甜點、烘焙</option>
+    <option>生鮮、農產、水產</option>
+    <option>服飾、配件</option>
+    <option>美妝、保養</option>
+    <option>生活用品、家居</option>
+    <option>手作、文創</option>
+    <option>3C、工具</option>
+    <option>其他</option>
+  </select>
+  <div class="err" id="regErr">請填名字或暱稱</div>
+  <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:14px" id="regBtn" type="button">開始 ▶</button>
+  <a class="skip" href="#" id="regSkip">先逛逛，等等再報到</a>
+</div></div>
+
+<div id="toast" role="status" aria-live="polite"></div>

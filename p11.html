@@ -1,0 +1,152 @@
+
+  /* ---------- 事件綁定 ---------- */
+  document.addEventListener('click',function(e){
+    var t=e.target.closest?e.target.closest('[data-tab],[data-poll],[data-pf],[data-cp],[data-ex],[data-m],[data-src],[data-cyc]'):null;
+    if(!t)return;
+    if(t.classList.contains('tab-btn')){switchTab(t.getAttribute('data-tab'));return;}
+    if(t.hasAttribute('data-poll')){vote(t.getAttribute('data-poll'),t.getAttribute('data-v'));return;}
+    if(t.hasAttribute('data-pf')){pFilter=t.getAttribute('data-pf');renderPFilter();renderPrompts();return;}
+    if(t.hasAttribute('data-cp')){
+      var p=PROMPTS.filter(function(x){return x.id===t.getAttribute('data-cp');})[0];
+      if(p){copyTxt(t,p.b);track('copy_prompt',{id:p.id});} return;}
+    if(t.hasAttribute('data-ex')){
+      var b=document.getElementById('pb_'+t.getAttribute('data-ex'));
+      if(b){var op=b.style.maxHeight==='none';b.style.maxHeight=op?'':'none';t.textContent=op?'展開全文':'收起';} return;}
+    if(t.hasAttribute('data-src')){
+      calcSrc=t.getAttribute('data-src');
+      document.querySelectorAll('[data-src]').forEach(function(x){x.classList.toggle('on',x===t);});
+      document.getElementById('pasteWrap').style.display=calcSrc==='mine'?'':'none';
+      return;}
+    if(t.hasAttribute('data-cyc')){
+      var c=+t.getAttribute('data-cyc');
+      document.getElementById('cycleIn').value=c; state.cyc=c; save();
+      document.querySelectorAll('[data-cyc]').forEach(function(x){x.classList.toggle('on',x===t);});
+      if(lastCalc)doCalc();
+      return;}
+    if(t.hasAttribute('data-m')){
+      subMode=t.getAttribute('data-m');
+      document.querySelectorAll('#subMode button').forEach(function(x){x.classList.toggle('on',x===t);});
+      document.getElementById('subTextWrap').style.display=subMode==='text'?'':'none';
+      document.getElementById('subImgWrap').style.display=subMode==='image'?'':'none';
+      return;}
+  });
+  document.addEventListener('change',function(e){
+    var el=e.target;
+    if(el.hasAttribute&&el.hasAttribute('data-ck')){
+      var key=el.getAttribute('data-ck'), i=+el.getAttribute('data-i');
+      state[key][i]=el.checked; save();
+      var map={prep:['prepHost',PREP,false],m1:['m1Chk',M1,true],m2:['m2Chk',M2,true],m3:['m3Chk',M3,true],fin:['finalChk',FINAL,true]};
+      var m=map[key]; if(m)renderChecks(m[0],m[1],key,m[2]);
+      if(key==='fin')finalVerdict();
+      updateHud(); syncRow(); return;
+    }
+    if(el.id==='lineTier'){lineCalc();return;}
+    if(el.id==='sc_who'){state.sc.who=el.value;save();scCalc();return;}
+    if(el.id==='regCat'){return;}
+  });
+  document.addEventListener('input',function(e){
+    var el=e.target;
+    if(/^sc_/.test(el.id)){state.sc[el.id.slice(3)]=el.value;save();scCalc();return;}
+    if(/^pl_/.test(el.id)){state.plan[el.id.slice(3)]=el.value;save();plCalc();updateHud();return;}
+    if(/^kp_/.test(el.id)){kpiCalc();return;}
+    if(el.id==='lineFriends'||el.id==='lineSleep'){lineCalc();return;}
+    if(el.id==='cycleIn'){
+      state.cyc=Math.max(3,Math.min(365,parseInt(el.value,10)||30)); save();
+      document.querySelectorAll('[data-cyc]').forEach(function(x){x.classList.toggle('on',+x.getAttribute('data-cyc')===state.cyc);});
+      return;}
+    if(el.id==='subText'){state.drafts=el.value;save();return;}
+  });
+
+  function on(id,fn){var el=document.getElementById(id);if(el)el.addEventListener('click',function(e){e.preventDefault();fn(e,el);});}
+  on('heroReg',function(){loggedIn()?switchTab('u1'):openReg();});
+  on('calcBtn',function(){doCalc();});
+  on('calcCopy',function(e,el){
+    if(!lastCalc){toast('先按「算出我的三層」');return;}
+    copyTxt(el,calcText(),'✓ 已複製，貼到 GPT 接著跑 P2');});
+  on('pushBtn',function(){pushCheck();});
+  on('pushDemo',function(){document.getElementById('pushIn').value=PUSHDEMO;pushCheck();});
+  on('pushSend',function(){
+    var t=(document.getElementById('pushIn').value||'').trim();
+    if(!t){toast('先貼上推播文案');return;}
+    sendText('push','【喚醒推播】\n'+t,'pushStatus','✅ 推播已交件');});
+  on('scCopy',function(e,el){
+    var t=scText(); if(!t){toast('三格至少填一格');return;}
+    copyTxt(el,t);track('copy_script',{});});
+  on('scDemo',function(){
+    Object.keys(SCDEMO).forEach(function(k){state.sc[k]=SCDEMO[k];});
+    save();renderAll();toast('已填入範例，照著改成你的商品');});
+  on('scSend',function(){
+    var t=scText(); if(!t){toast('三格至少填一格');return;}
+    sendText('sc',t,'scStatus','✅ 腳本已交件');});
+  on('lawBtn',function(){lawCheck();});
+  on('lawDemo',function(){document.getElementById('lawIn').value=LAWDEMO;lawCheck();});
+  on('plCopy',function(e,el){
+    var t=plText(); if(!t){toast('至少填一格');return;}
+    copyTxt(el,t);track('copy_plan',{});});
+  on('plSend',function(){
+    var t=plText(); if(!t){toast('至少填一格');return;}
+    sendText('m4',t,'plStatus','✅ 30 天方案已交件');});
+  on('copyCsv',function(e,el){copyTxt(el,csvText(),'✓ 80 筆已複製，貼進 ChatGPT 就能分析');track('copy_csv',{});});
+  on('listCopy',function(e,el){
+    copyTxt(el,['【賣貨便 AI 實戰工作坊　今天的重點】',
+      '',
+      '① 分得出人：最近購買、購買頻率、互動三個維度，分成鐵粉 VIP、回購客、沉睡客；累積金額當加分題。',
+      '　VIP 給專屬感、回購客給第二件的理由、沉睡客給回來的理由＋期限。',
+      '　訂單上傳 AI 前，只留會員代號、最近購買日、購買次數、累積金額、主要品類。',
+      '',
+      '② 排得出節奏：把 GPT 建成長期專案（資料放檔案、規則放專案指示、任務放每週對話）。',
+      '　四週節奏：關懷、內容、互動、回購；第 4 週對齊平台免運與檔期。',
+      '　喚醒四要素：叫得出你、回來的理由、誘因＋期限、一個行動。',
+      '　LINE 11/1 新制：輕用量每月 200 則，照收到的人數算，所以要分眾。',
+      '',
+      '③ 講得出對的內容：影音也要分層；15 秒＝鉤子、證據、行動；三鏡頭＝特寫、情境、收尾。',
+      '　文案五段：對誰 → 場景或痛點 → 證據 → 誘因＋期限 → 一個行動。',
+      '　上架前做法規自檢：食品不能宣稱醫療效能，少用絕對用語。',
+      '',
+      '④ 算得出回購：喚醒回購率 ＝ 推播後 14 天內下單人數 ÷ 收到推播人數，每個月算一次。',
+      '',
+      '回家後 30 天：第 1 週分三層貼標籤設碼；第 2 週發第一則喚醒推播；第 3 週拍 3 支 15 秒影片；第 4 週算成效、調門檻。',
+      '',
+      '回購不是靠打折換來的，是靠「被記得」換來的。',
+      '提示詞與練習檔：https://atm301.github.io/myship-member-workshop/'].join('\n'));});
+  on('printBtn',function(){window.print();});
+  on('regBtn',function(){doReg();});
+  on('regSkip',function(){closeReg();});
+  var hudEl=document.getElementById('hud');
+  if(hudEl)hudEl.addEventListener('click',function(){loggedIn()?switchTab('done'):openReg();});
+  var rn=document.getElementById('regNick');
+  if(rn)rn.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();doReg();}});
+  var ro=document.getElementById('regOverlay');
+  if(ro)ro.addEventListener('click',function(e){if(e.target===ro&&loggedIn())closeReg();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&loggedIn())closeReg();});
+
+  var dz=document.getElementById('dropz'), sf=document.getElementById('subFile');
+  if(dz&&sf){
+    dz.addEventListener('click',function(){sf.click();});
+    sf.addEventListener('change',function(){
+      var f=sf.files&&sf.files[0]; if(!f)return;
+      subFileObj=f; dz.classList.add('has');
+      dz.innerHTML='✅ 已選：'+esc(f.name)+'<br><small>'+(f.size/1024/1024).toFixed(1)+' MB，按下面的「送出」</small>';
+    });
+    ['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('has');});});
+    dz.addEventListener('dragleave',function(){if(!subFileObj)dz.classList.remove('has');});
+    dz.addEventListener('drop',function(e){
+      e.preventDefault();
+      var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]; if(!f)return;
+      subFileObj=f; dz.classList.add('has');
+      dz.innerHTML='✅ 已選：'+esc(f.name)+'<br><small>'+(f.size/1024/1024).toFixed(1)+' MB，按下面的「送出」</small>';
+    });
+  }
+  on('subBtn',function(){doSubmit();});
+
+  /* ---------- 啟動 ---------- */
+  renderPFilter(); renderPrompts(); renderAll();
+  refreshStats(); loadBoard();
+  if(loggedIn()){loadSubs();}
+  setInterval(refreshStats,25000);
+  setTimeout(function(){ if(!loggedIn())openReg(); },1200);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)refreshStats();});
+})();
+</script>
+</body>
+</html>

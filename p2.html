@@ -1,0 +1,124 @@
+<body>
+<header>
+  <div class="wrap">
+    <div class="hd">
+      <div>
+        <h1>🛍️ 從一次成交到持續回購
+          <span class="sub">賣貨便會員經營 × AI 實戰工作坊　·　講師 何佳勳（小圭老師）</span>
+        </h1>
+      </div>
+    </div>
+    <div class="tabs" id="tabs" role="tablist">
+      <button class="tab-btn on" data-tab="start" role="tab" aria-selected="true">🚀 開始</button>
+      <button class="tab-btn" data-tab="u1" role="tab" aria-selected="false">① 分得出人</button>
+      <button class="tab-btn" data-tab="u2" role="tab" aria-selected="false">② 排得出節奏</button>
+      <button class="tab-btn" data-tab="u3" role="tab" aria-selected="false">③ 講得出內容</button>
+      <button class="tab-btn" data-tab="final" role="tab" aria-selected="false">④ 算得出回購</button>
+      <button class="tab-btn" data-tab="ai" role="tab" aria-selected="false">🤖 提示詞庫</button>
+      <button class="tab-btn" data-tab="files" role="tab" aria-selected="false">📥 練習檔與工具</button>
+      <button class="tab-btn" data-tab="done" role="tab" aria-selected="false">📤 交作業</button>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== 開始 ===================== -->
+<section class="tab-section active" data-tab="start"><div class="wrap">
+  <div class="hero">
+    <h2>從一次成交，<span class="em">到持續回購</span></h2>
+    <p>今天不教從零開始，直接談回購。三段實作，每段都有自己的成品，下課帶走四件明天就能上線的東西。</p>
+    <div class="meta">
+      <span>📅 2026/11/6（五）13:00 到 17:00</span>
+      <span>📍 犇亞會議中心 15F CDE</span>
+      <span>🎁 四份成果</span>
+      <span>🤖 10 組提示詞</span>
+    </div>
+    <div class="hero-btns">
+      <button class="btn btn-primary" id="heroReg" type="button">🙋 先報到，分數才記得到你身上</button>
+      <button class="btn btn-ghost" type="button" onclick="switchTab('files')">📥 下載練習用訂單資料</button>
+    </div>
+  </div>
+
+  <div id="whoBox"></div>
+
+  <h3 class="h3">今天的流程</h3>
+  <div class="tw"><table>
+    <tr><th>時間</th><th>段落</th><th>你會完成的成果</th></tr>
+    <tr><td><b>13:00</b></td><td>主持人開場</td><td>認識今天的流程</td></tr>
+    <tr><td><b>13:10</b></td><td>小圭開場：破冰與開工檢查</td><td>加入成發 LINE 社群、確認設備</td></tr>
+    <tr><td><b>13:20</b></td><td>單元一｜會員分級與回購策略</td><td><b>成果 1</b>：三層會員策略圖</td></tr>
+    <tr><td>14:15</td><td>中場休息 10 分鐘</td><td></td></tr>
+    <tr><td><b>14:25</b></td><td>單元二｜用 GPT 打造營運排程</td><td><b>成果 2</b>：四週互動行事曆＋喚醒推播文案</td></tr>
+    <tr><td>15:20</td><td>中場休息 10 分鐘</td><td></td></tr>
+    <tr><td><b>15:30</b></td><td>單元三｜AI 影音與促銷場景</td><td><b>成果 3</b>：15 秒短影音企劃＋動態素材＋促銷文案</td></tr>
+    <tr><td><b>16:30</b></td><td>成果發表與點評</td><td><b>成果 4</b>：30 天回購行動方案</td></tr>
+    <tr><td><b>16:50</b></td><td>大合照</td><td>帶著四份成果回家</td></tr>
+  </table></div>
+
+  <h3 class="h3">每個人今天帶走四件「明天就能上線」的東西</h3>
+  <div class="grid g4">
+    <div class="card o"><h3><span class="num">1</span>分得出人</h3><p><b>三層會員策略圖</b><br>誰是鐵粉、誰在回購、誰快睡著了，各給什麼誘因。</p></div>
+    <div class="card a"><h3><span class="num">2</span>排得出節奏</h3><p><b>四週行事曆＋喚醒推播</b><br>用 GPT 專案排好一個月，第一則推播直接能發。</p></div>
+    <div class="card g"><h3><span class="num">3</span>講得出對的內容</h3><p><b>15 秒短影音＋促銷文案</b><br>腳本、三鏡頭、AI 動態素材，加一則高轉換文案。</p></div>
+    <div class="card b"><h3><span class="num">4</span>算得出回購</h3><p><b>30 天回購行動方案</b><br>對象、誘因、管道、時程、指標，一頁看完。</p></div>
+  </div>
+
+  <h3 class="h3">開工前 3 分鐘檢查</h3>
+  <div id="prepHost"></div>
+  <div class="callout warn"><b>⚠️ 在 LINE 裡面直接開連結會擋 Google 登入。</b>要註冊創流的時候，請先複製網址，改用 Chrome 或 Safari 打開。</div>
+
+  <h3 class="h3">報名問卷：今天的賣家，已經有熟客，也已經在用 AI</h3>
+  <div class="grid g3">
+    <div class="card o"><h3>65%</h3><p><b>已經有固定客戶或會員社群</b><br>所以今天不教從零開始，直接談回購。</p></div>
+    <div class="card a"><h3>81%</h3><p><b>最想先「分析不同客戶的購買行為與回購原因」</b><br>所以單元一先把客人分清楚。</p></div>
+    <div class="card g"><h3>72%</h3><p><b>已經用 AI 寫文案或做圖片影片</b><br>但只有 15% 已經把 AI 放進日常流程。</p></div>
+  </div>
+  <div class="tw sm" style="margin-top:12px"><table>
+    <tr><th>你們最想解決的事</th><th>人數</th><th>今天在哪一段處理</th></tr>
+    <tr><td>回購、舊客、客源</td><td>16 位</td><td>單元一＋成果發表</td></tr>
+    <tr><td>文案、圖片、海報</td><td>16 位</td><td>單元三</td></tr>
+    <tr><td>工作流程、自動化、效率</td><td>15 位</td><td>單元二</td></tr>
+    <tr><td>影片、短影音</td><td>14 位</td><td>單元三</td></tr>
+    <tr><td>數據分析、訂單整理</td><td>5 位</td><td>單元一</td></tr>
+  </table></div>
+  <p class="muted-note" style="margin-top:8px">資料出處：賣貨便 AI 實戰工作坊台北場報名問卷（67 份，2026/11），開放題人工歸類、可複選。</p>
+
+  <h3 class="h3">今天的走法</h3>
+  <div class="grid g3">
+    <div class="card"><h3>💻 個人實作</h3><p>三個單元各有一次實作，做<b>自己賣場</b>的東西，不是練習題。</p></div>
+    <div class="card"><h3>💬 上傳成發 LINE 社群</h3><p>每次實作完成就截圖上傳，格式：<b>品牌名＋成果編號</b>。</p></div>
+    <div class="card"><h3>🙋 卡關就舉手</h3><p>機動夥伴和同桌業務夥伴都會過去幫你，不用等到最後。</p></div>
+  </div>
+  <div class="callout"><b>今天不分組計分，比的是你自己帶回家的東西。</b>
+  小禮物：燈箱磁鐵 20 個（7 題互動題每題最快答對、3 次實作最先上傳的第 1 位、老師出的題目回答）；50 元商品卡 7 張（每單元小圭挑 2 份優秀作品點評、成果發表最完整的 30 天行動方案）。</div>
+
+  <h3 class="h3">今天的地圖：會員經營循環</h3>
+  <div class="flow">
+    <span class="n">分層　單元一</span><span class="ar">▶</span>
+    <span class="n lite">排程　單元二</span><span class="ar">▶</span>
+    <span class="n lite">內容　單元三</span><span class="ar">▶</span>
+    <span class="n lite">回購與數據　成果發表</span>
+  </div>
+  <div class="callout ok"><b>數據回來再重新分層：</b>每跑一圈，你就更清楚誰會回來、用什麼方法會回來。</div>
+
+  <h3 class="h3">破冰</h3>
+  <div class="poll" id="poll_fake"></div>
+  <div class="poll" id="poll_q1"></div>
+  <div class="callout warn"><b>選 C、D 的人要特別注意：</b>你的熟客很可能正在變成「沉睡客」，他不是不喜歡你，是忘了你。
+  大部分賣家都在「等」客人回來，可是客人每天被別家的訊息包圍。<b>回購不是等出來的，是排出來的。</b></div>
+
+  <h3 class="h3">為什麼熟客不再回來？問題通常不在商品</h3>
+  <div class="grid g4">
+    <div class="card x"><h3>😴 忘了你</h3><p>下單後就沒再出現在他眼前。</p></div>
+    <div class="card x"><h3>🪧 沒有回來的理由</h3><p>沒有新品、沒有情境、沒有期限。</p></div>
+    <div class="card x"><h3>🛋️ 被別家先接住</h3><p>別人比你早一步提醒他。</p></div>
+    <div class="card x"><h3>💔 上次體驗沒被記住</h3><p>收到貨就結束，沒有感謝與後續。</p></div>
+  </div>
+  <div class="vs" style="margin-top:13px">
+    <div class="col bad"><h4>一直找新客</h4><ul>
+      <li>獲客成本越來越高</li><li>廣告費砸下去卻看不見成效</li><li>每一張訂單都要從零開始說服</li>
+    </ul></div>
+    <div class="col good"><h4>讓熟客持續回購</h4><ul>
+      <li>熟客已經信任你、知道商品好不好</li><li>只差一個「現在回來」的理由</li><li>以及一個方便的入口</li>
+    </ul></div>
+  </div>
+</div></section>

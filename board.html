@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>投影牆｜賣貨便會員經營 × AI 實戰工作坊</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%BA%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#F2A33C;--mint:#f5d7b5;--sun:#ff9a4d;--deep:#2b1a10;--line:rgba(245,215,181,.24)}
+body{font-family:'Noto Sans TC',system-ui,sans-serif;background:
+  radial-gradient(1100px 620px at 82% -8%,rgba(232,101,26,.3),transparent 62%),
+  radial-gradient(900px 520px at 6% 108%,rgba(242,163,60,.18),transparent 60%),var(--deep);
+  color:#fdf0e4;min-height:100vh;padding:26px 30px 20px;line-height:1.55}
+header{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+header h1{font-size:1.5rem;font-weight:900}
+header .sub{font-size:.9rem;color:var(--mint);font-weight:400}
+.live{margin-left:auto;display:flex;align-items:center;gap:9px;background:rgba(232,101,26,.2);border:1px solid var(--line);border-radius:999px;padding:7px 17px;font-weight:800;font-size:.9rem}
+.live i{width:10px;height:10px;border-radius:50%;background:#8ff0b4;animation:bl 1.5s infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.3}}
+.stats{display:grid;gap:16px;grid-template-columns:repeat(5,1fr);margin-bottom:22px}
+.s{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:20px;padding:18px 20px}
+.s b{display:block;font-size:3.1rem;font-weight:900;line-height:1.05;color:#fff}
+.s span{font-size:.95rem;color:var(--mint);font-weight:800}
+.s.o b{color:var(--sun)} .s.g b{color:#ffd08a}
+.main{display:grid;gap:18px;grid-template-columns:1.25fr 1fr;align-items:start}
+.panel{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:22px;padding:22px 24px}
+.panel h2{font-size:1.15rem;font-weight:900;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.panel h2 small{font-weight:400;color:var(--mint);font-size:.85rem}
+.qq{font-size:1.5rem;font-weight:900;margin-bottom:16px;line-height:1.4}
+.opt{margin-bottom:13px}
+.opt .top{display:flex;align-items:center;gap:11px;font-size:1.1rem;font-weight:700;margin-bottom:5px}
+.opt .k{width:34px;height:34px;flex:0 0 auto;border-radius:50%;background:rgba(245,215,181,.2);color:var(--mint);font-weight:900;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.opt.ok .k{background:#F2A33C;color:#3d2305}
+.opt .lb{flex:1}
+.opt .pc{font-weight:900;font-size:1.3rem;color:#fff;min-width:118px;text-align:right}
+.tr{height:14px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+.tr i{display:block;height:100%;background:linear-gradient(90deg,#E8651A,var(--sun));transition:width .5s}
+.opt.ok .tr i{background:linear-gradient(90deg,#F2A33C,#ffd08a)}
+.hint{color:var(--mint);font-size:.88rem;margin-top:14px}
+.feed{display:flex;flex-direction:column;gap:12px;max-height:62vh;overflow:hidden}
+.fi{background:rgba(255,255,255,.055);border:1px solid var(--line);border-left:5px solid var(--sun);border-radius:15px;padding:13px 16px}
+.fi .fh{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:6px;font-size:.88rem}
+.fi .nm{font-weight:900;font-size:1rem}
+.fi .tg{background:rgba(255,154,77,.22);color:var(--sun);border-radius:999px;padding:2px 11px;font-weight:800;font-size:.78rem}
+.fi .tm{margin-left:auto;color:var(--mint);font-size:.8rem}
+.fi .bd{font-size:.95rem;color:#f7e6d6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.fi img{max-width:100%;border-radius:11px;margin-top:6px;max-height:180px;object-fit:cover}
+.empty{color:var(--mint);font-size:.95rem}
+footer{margin-top:20px;color:var(--mint);font-size:.85rem;display:flex;gap:14px;flex-wrap:wrap}
+@media(max-width:1200px){.stats{grid-template-columns:repeat(3,1fr)}.main{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>📺 從一次成交到持續回購<span class="sub">　賣貨便會員經營 × AI 實戰工作坊 · 分得出人 → 排得出節奏 → 講得出對的內容 → 算得出回購</span></h1></div>
+  <div class="live"><i></i><span id="liveTxt">即時更新</span></div>
+</header>
+
+<div class="stats" id="stats"></div>
+
+<div class="main">
+  <div class="panel">
+    <h2>❓ 互動題即時結果<small id="qNav">← → 換題　空白鍵暫停輪播</small></h2>
+    <div id="pollBox"></div>
+  </div>
+  <div class="panel">
+    <h2>📤 最新交件<small id="subCnt"></small></h2>
+    <div class="feed" id="feed"></div>
+  </div>
+</div>
+
+<footer>
+  <div>講師 何佳勳（小圭老師）· 圭話行銷股份有限公司</div>
+  <div id="coh"></div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+var SUPA='https://dpglkagtzdwiovzbtase.supabase.co';
+var KEY='sb_publishable_Tuj9p4DXvO-jEqVcBnumTg_TqZ1NnRu';
+var COURSE='myship-member-workshop';
+var ANS={q2:'B',q3:'B',q4:'B',q5:'D',q6:'C',q7:'A'};
+var QT={
+  fake:{t:'破冰：以下四件事，哪一件是假的？',o:[['1','錄製 Podcast 100 集'],['2','一個月虛擬貨幣交易 1 億美金'],['3','去過非洲史瓦帝尼演講'],['4','每年演講 200 場以上']]},
+  q1:{t:'你上一次「主動」聯絡老客人，是什麼時候？',o:[['A','這一週'],['B','這個月'],['C','三個月內'],['D','想不起來了']]},
+  cycle:{t:'你知道自己的顧客多久回購一次嗎？',o:[['A','憑感覺估的'],['B','看幾位熟客手動推算'],['C','用訂單算平均間隔天數'],['D','沒算過，不知道']]},
+  q2:{t:'哪一位客人，最值得你「今天」優先喚醒？',o:[['A','上週剛下第一單的新客'],['B','買過 5 次、累積 4,800 元，最近一次是 4 個月前'],['C','一年前買過 1 次，消費 200 元'],['D','每週都會下單的鐵粉']]},
+  q3:{t:'要讓鐵粉 VIP 持續回購，哪一個誘因最好？',o:[['A','全館 85 折'],['B','新品搶先試吃＋限量預留名額'],['C','免運券一張'],['D','不用給，他自己會回來']]},
+  q4:{t:'LINE 官方帳號 11/1 起，免費的「輕用量」每月幾則？',o:[['A','500 則'],['B','200 則'],['C','1,000 則'],['D','3,000 則']]},
+  q5:{t:'「全館 85 折，快來買！」少了喚醒四要素裡的哪一個？',o:[['A','叫得出你'],['B','回來的理由'],['C','期限'],['D','以上都少了']]},
+  q6:{t:'一支 15 秒促銷短影音，前 3 秒最應該放什麼？',o:[['A','品牌 logo 動畫'],['B','店名和自我介紹'],['C','最吸睛的畫面或一句痛點問句'],['D','完整價格表']]},
+  q7:{t:'哪一句促銷文案，最可能違反食品廣告的規範？',o:[['A','每天一片，血糖穩穩不用怕'],['B','手作少糖，下午茶的小確幸'],['C','冷凍店到店，下班順路帶回家'],['D','11/30 前輸入回歸碼折 50 元']]}
+};
+var TASKNA={m1:'成果 1 策略圖',m2:'成果 2 行事曆',m3:'成果 3 影音企劃',m4:'成果 4 30 天方案',push:'喚醒推播',sc:'15 秒腳本',plan:'30 天方案',extra:'補充'};
+var KEYS=Object.keys(QT);
+
+function H(){return {apikey:KEY,Authorization:'Bearer '+KEY};}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+function q(s){return document.querySelector(s);}
+function today(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+var COHORT=(new URLSearchParams(location.search).get('c')||'').trim()||today();
+function pct(a,b){return b?Math.round(a/b*100):0;}
+function fmt(s){try{return new Date(s).toLocaleTimeString('zh-TW',{hour12:false,hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
+
+var D={students:[],subs:[]}, idx=0, auto=true;
+q('#coh').textContent='梯次 '+COHORT;
+
+async function load(){
+  var base='course=eq.'+encodeURIComponent(COURSE)+'&cohort=eq.'+encodeURIComponent(COHORT);
+  try{
+    var a=await Promise.all([
+      fetch(SUPA+'/rest/v1/lw_line_students?'+base+'&select=code,name,office,quiz',{headers:H()}).then(function(r){return r.json();}),
+      fetch(SUPA+'/rest/v1/lw_workshop_submissions?'+base+'&select=team,submitter,task,kind,content,image_url,created_at&order=created_at.desc&limit=12',{headers:H()}).then(function(r){return r.json();})
+    ]);
+    D.students=Array.isArray(a[0])?a[0]:[]; D.subs=Array.isArray(a[1])?a[1]:[];
+    q('#liveTxt').textContent='即時更新　'+new Date().toLocaleTimeString('zh-TW',{hour12:false});
+    render();
+  }catch(e){q('#liveTxt').textContent='連線中…';}
+}
+
+function qz(s){return (s&&s.quiz&&typeof s.quiz==='object')?s.quiz:{};}
+function render(){
+  var st=D.students, who={}; D.subs.forEach(function(x){who[x.submitter]=1;});
+  var tot=0,right=0;
+  st.forEach(function(s){var o=qz(s);Object.keys(ANS).forEach(function(k){if(o[k]){tot++;if(o[k]===ANS[k])right++;}});});
+  var m1=st.filter(function(s){var a=qz(s).m1;return Array.isArray(a)&&a.filter(Boolean).length===5;}).length;
+  var m3=st.filter(function(s){var a=qz(s).m3;return Array.isArray(a)&&a.filter(Boolean).length===5;}).length;
+  q('#stats').innerHTML=[
+    ['報到人數',st.length,''],['交件人數',Object.keys(who).length,'g'],
+    ['全場答對率',pct(right,tot)+'%','o'],['實作一完成',m1,''],['實作三完成',m3,'g']
+  ].map(function(x){return '<div class="s '+x[2]+'"><b>'+x[1]+'</b><span>'+x[0]+'</span></div>';}).join('');
+  renderPoll(); renderFeed();
+}
+function renderPoll(){
+  var k=KEYS[idx], P=QT[k], cnt={}, n=0;
+  D.students.forEach(function(s){var v=qz(s)[k];if(v){cnt[v]=(cnt[v]||0)+1;n++;}});
+  var right=ANS[k];
+  q('#pollBox').innerHTML='<div class="qq">'+esc(P.t)+'</div>'
+    +P.o.map(function(o){
+      var c=cnt[o[0]]||0, p=pct(c,n), on=right===o[0];
+      return '<div class="opt'+(on?' ok':'')+'"><div class="top"><span class="k">'+o[0]+'</span>'
+        +'<span class="lb">'+esc(o[1])+(on?' ✅':'')+'</span><span class="pc">'+c+' 人 '+p+'%</span></div>'
+        +'<div class="tr"><i style="width:'+p+'%"></i></div></div>';
+    }).join('')
+    +'<div class="hint">'+n+' 人作答'+(right?('　正解 '+right):'　（這題沒有正解）')
+    +'　第 '+(idx+1)+' / '+KEYS.length+' 題'+(auto?'　自動輪播中':'　已暫停')+'</div>';
+}
+function renderFeed(){
+  q('#subCnt').textContent='共 '+D.subs.length+' 筆（只顯示最新 12 筆）';
+  q('#feed').innerHTML=D.subs.length?D.subs.slice(0,6).map(function(x){
+    var body=x.kind==='image'
+      ? '<img src="'+esc(x.image_url)+'" loading="lazy" alt="交件">'
+      : '<div class="bd">'+esc((x.content||'').slice(0,160))+((x.content||'').length>160?'…':'')+'</div>';
+    return '<div class="fi"><div class="fh"><span class="nm">'+esc(x.submitter||'')+'</span>'
+      +'<span class="tg">'+esc(TASKNA[x.task]||x.task)+'</span><span class="tm">'+fmt(x.created_at)+'</span></div>'+body+'</div>';
+  }).join(''):'<p class="empty">還沒有交件。學員主要交到成發 LINE 社群；在網站「📤 交作業」送出的，這裡也會出現。</p>';
+}
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'){idx=(idx+1)%KEYS.length;auto=false;renderPoll();}
+  if(e.key==='ArrowLeft'){idx=(idx-1+KEYS.length)%KEYS.length;auto=false;renderPoll();}
+  if(e.key===' '){e.preventDefault();auto=!auto;renderPoll();}
+});
+load();
+setInterval(load,12000);
+setInterval(function(){if(auto){idx=(idx+1)%KEYS.length;renderPoll();}},11000);
+})();
+</script>
+</body>
+</html>

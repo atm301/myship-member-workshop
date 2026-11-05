@@ -1,0 +1,5 @@
+node_modules/
+_*.mjs
+_*.js
+_*.html
+patch_*.mjs

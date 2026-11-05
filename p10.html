@@ -1,0 +1,676 @@
+
+  /* ---------- 狀態 ---------- */
+  var state={nick:'',brand:'',cat:'',quiz:{},prep:[],m1:[],m2:[],m3:[],fin:[],
+    sc:{},plan:{},line:{},kpi:{},cyc:30,drafts:'',tools:{}};
+  try{var raw=localStorage.getItem(STORE);if(raw){var ps=JSON.parse(raw);if(ps.cohort===COHORT){
+    ['nick','brand','cat','drafts'].forEach(function(k){if(ps[k])state[k]=ps[k];});
+    if(ps.cyc)state.cyc=ps.cyc;
+    ['quiz','sc','plan','line','kpi','tools'].forEach(function(k){if(ps[k]&&typeof ps[k]==='object')state[k]=ps[k];});
+    ['prep','m1','m2','m3','fin'].forEach(function(k){if(Array.isArray(ps[k]))state[k]=ps[k];});
+  }}}catch(e){}
+  function save(){try{localStorage.setItem(STORE,JSON.stringify(Object.assign({cohort:COHORT},state)));}catch(e){}}
+  function loggedIn(){return !!state.nick;}
+  function myCode(){return (state.brand?state.brand+'｜':'')+state.nick;}
+  function myTeam(){return state.brand||'未填品牌';}
+
+  /* ---------- Supabase ---------- */
+  function payload(){
+    return {course:COURSE,cohort:COHORT,code:myCode(),name:state.nick,office:state.brand||'',
+      commit_checks:state.fin,commit_text:'',
+      quiz:Object.assign({},state.quiz,{brand:state.brand,cat:state.cat,prep:state.prep,
+        m1:state.m1,m2:state.m2,m3:state.m3,fin:state.fin,sc:state.sc,plan:state.plan,
+        line:state.line,kpi:state.kpi,cyc:state.cyc}),
+      score:0,cert_at:null};
+  }
+  async function syncRow(){
+    if(!loggedIn())return false;
+    try{
+      var r=await fetchT(SUPA_URL+'/rest/v1/lw_line_students?on_conflict=course,cohort,code',{method:'POST',
+        headers:Object.assign(H(),{'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'}),
+        body:JSON.stringify(payload())},15000);
+      return r.ok;
+    }catch(e){return false;}
+  }
+  async function fetchMe(ms){
+    if(!loggedIn())return null;
+    try{
+      var u=SUPA_URL+'/rest/v1/lw_line_students?course=eq.'+encodeURIComponent(COURSE)+'&cohort=eq.'+encodeURIComponent(COHORT)+'&code=eq.'+encodeURIComponent(myCode())+'&select=quiz,commit_checks';
+      var r=await fetchT(u,{headers:H()},ms||12000); var rows=await r.json();
+      return Array.isArray(rows)&&rows[0]?rows[0]:null;
+    }catch(e){return null;}
+  }
+  async function insertSub(o){
+    var r=await fetchT(SUPA_URL+'/rest/v1/lw_workshop_submissions',{method:'POST',headers:Object.assign(H(),{'Content-Type':'application/json',Prefer:'return=minimal'}),body:JSON.stringify(o)},20000);
+    if(!r.ok){var t='';try{t=await r.text();}catch(e){} throw new Error('送出失敗 '+r.status+' '+t.slice(0,60));}
+  }
+
+  /* ---------- 基礎 ---------- */
+  function switchTab(t){
+    document.querySelectorAll('.tab-section').forEach(function(s){s.classList.toggle('active',s.getAttribute('data-tab')===t);});
+    document.querySelectorAll('.tab-btn').forEach(function(b){var on=b.getAttribute('data-tab')===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on?'true':'false');});
+    var ab=document.querySelector('.tab-btn.on'); if(ab&&ab.scrollIntoView)try{ab.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});}catch(e){}
+    window.scrollTo({top:0,behavior:'smooth'});
+    track('tab',{tab:t});
+    if(t==='done'){loadSubs();loadBoard();}
+    if(t!=='ai')refreshStats();
+  }
+  window.switchTab=switchTab;
+  function toast(m){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},2600);}
+  function copyTxt(btn,txt,okMsg){
+    var done=function(){var o=btn.innerHTML;btn.innerHTML='✓ 已複製';toast(okMsg||'✓ 已複製');setTimeout(function(){btn.innerHTML=o;},1600);};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,function(){fb(txt);done();});}
+    else{fb(txt);done();}
+    function fb(t){var ta=document.createElement('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);}
+  }
+  function nf(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+
+  /* ---------- 互動題 ---------- */
+  function renderPoll(k){
+    var host=document.getElementById('poll_'+k); if(!host)return;
+    var P=POLLS[k], mine=state.quiz[k], voted=!!mine, n=pollN[k]||0;
+    var html=(P.pt?'<span class="pchip">答對加 '+P.pt+' 分</span>':'<span class="pchip g">'+(k==='fake'?'破冰':'現場統計')+'</span>')
+      +'<div class="q">'+esc(P.q)+'</div>'+(P.sub?'<div class="qs">'+esc(P.sub)+'</div>':'');
+    P.o.forEach(function(o){
+      var c=(pollAgg[k]&&pollAgg[k][o[0]])||0, pct=n?Math.round(c/n*100):0;
+      html+='<button class="popt'+(mine===o[0]?' mine':'')+'" type="button" data-poll="'+k+'" data-v="'+o[0]+'">'
+        +(voted?'<span class="bar" style="width:'+pct+'%"></span>':'')
+        +'<span class="k">'+o[0]+'</span><span class="lb">'+esc(o[1])+'</span>'
+        +(voted?'<span class="pc">'+pct+'%</span>':'')+'</button>';
+    });
+    html+='<div class="n">'+(voted?('目前 '+n+' 人作答'):(P.ans?'點一個選項作答':'點一個選項，結果會即時統計'))+'</div>';
+    if(P.ans){
+      html+='<div class="ansbox'+(voted?' show':'')+'"><div class="a">✅ 正解：'+P.ans+'　'+esc((P.o.filter(function(o){return o[0]===P.ans;})[0]||['',''])[1])+'</div>'
+        +'<p><b>為什麼：</b>'+esc(P.why)+'</p><div class="ext"><b>延伸：</b>'+esc(P.ext)+'</div></div>';
+    }
+    host.innerHTML=html;
+  }
+  function renderAllPolls(){Object.keys(POLLS).forEach(renderPoll);}
+  async function vote(k,v){
+    if(!loggedIn()){toast('先報到才能作答');openReg();return;}
+    state.quiz[k]=v; save(); renderPoll(k); updateHud(); track('poll_vote',{poll:k,value:v});
+    await syncRow(); refreshStats();
+  }
+
+  /* ---------- 勾選清單通用 ---------- */
+  function renderChecks(hostId,arr,key,withNum){
+    var h=document.getElementById(hostId); if(!h)return;
+    h.innerHTML=arr.map(function(it,i){
+      var title=Array.isArray(it)?it[0]:it, sub=Array.isArray(it)?it[1]:'';
+      return '<label class="chk'+(state[key][i]?' on':'')+'"><input type="checkbox" data-ck="'+key+'" data-i="'+i+'" '+(state[key][i]?'checked':'')+'>'
+        +(withNum?'<span class="d">'+(i+1)+'</span>':'')
+        +'<span class="t">'+esc(title)+(sub?'<small>'+esc(sub)+'</small>':'')+'</span></label>';
+    }).join('');
+  }
+  function finalVerdict(){
+    var el=document.getElementById('finalVerdict'); if(!el)return;
+    var d=state.fin.filter(Boolean).length;
+    el.className='callout'+(d===FINAL.length?' ok':'');
+    el.innerHTML=d===FINAL.length?'<b>✅ 五項都過了，今天的東西你全部帶走了。</b>回去照 30 天清單做，下個月再算一次喚醒回購率。'
+      :('目前 '+d+' / '+FINAL.length+' 項。五項都打勾，就可以交件了。');
+  }
+
+  /* ---------- 三層分群計算機 ---------- */
+  var calcSrc='demo', lastCalc=null;
+  function parseOrders(txt){
+    var rows=[], bad=0;
+    txt.split(/\r?\n/).forEach(function(line,i){
+      line=line.trim(); if(!line)return;
+      var p=line.split(/\t|,|\|/).map(function(x){return x.trim().replace(/^"|"$/g,'');});
+      if(p.length<4)return;
+      if(i===0&&/代號|會員|日期|購買/.test(p[0]+p[1]))return;
+      var d=parseDate(p[1]), n=parseInt(String(p[2]).replace(/[^\d]/g,''),10), a=parseInt(String(p[3]).replace(/[^\d]/g,''),10);
+      if(!d||isNaN(n)||isNaN(a)){bad++;return;}
+      rows.push({id:p[0],d:d,n:n,amt:a,cat:p[4]||''});
+    });
+    return {rows:rows,bad:bad};
+  }
+  function parseDate(s){
+    s=String(s).trim();
+    var m=s.match(/(\d{4})\D(\d{1,2})\D(\d{1,2})/);
+    if(m)return new Date(+m[1],+m[2]-1,+m[3]);
+    m=s.match(/^(\d{4})(\d{2})(\d{2})$/);
+    if(m)return new Date(+m[1],+m[2]-1,+m[3]);
+    if(/^\d{5}$/.test(s)){var base=new Date(1899,11,30);base.setDate(base.getDate()+parseInt(s,10));return base;}
+    var d=new Date(s); return isNaN(d.getTime())?null:d;
+  }
+  function demoRows(){
+    return ORDERS.map(function(l){
+      var p=l.split('|');
+      return {id:p[0],d:parseDate(p[1]),n:+p[2],amt:+p[3],cat:p[4]};
+    });
+  }
+  function doCalc(){
+    var src=calcSrc==='demo'?demoRows():null, bad=0;
+    if(!src){
+      var txt=(document.getElementById('pasteData').value||'').trim();
+      if(!txt){toast('請先貼上你的訂單資料');return;}
+      var pr=parseOrders(txt); src=pr.rows; bad=pr.bad;
+      if(src.length<3){toast('讀到的資料太少，確認一下欄位順序：代號、日期、次數、金額');return;}
+    }
+    var cyc=Math.max(3,Math.min(365,parseInt(document.getElementById('cycleIn').value,10)||30));
+    state.cyc=cyc; save();
+    var today=new Date(); today.setHours(0,0,0,0);
+    src.forEach(function(r){r.days=Math.round((today-r.d)/86400000);});
+    var amts=src.map(function(r){return r.amt;}).sort(function(a,b){return b-a;});
+    var topIdx=Math.max(0,Math.ceil(amts.length*0.2)-1);
+    var top20=amts[topIdx];
+    var vip=[],rep=[],sleep=[],risk=[],warnList=[];
+    src.forEach(function(r){
+      var active90=r.days<=90;
+      if(active90&&r.n>=3){vip.push(r);}
+      else if(r.amt>=top20&&active90){vip.push(r);}
+      else if(r.days>cyc*2){
+        sleep.push(r);
+        if(r.amt>=top20)risk.push(r);
+      }
+      else if(active90||r.days<=cyc*2){rep.push(r);}
+      else{sleep.push(r);}
+      if(r.amt>=top20&&r.days>cyc&&r.days<=cyc*2)warnList.push(r);
+    });
+    var sum=function(a){return a.reduce(function(n,r){return n+r.amt;},0);};
+    var avg=function(a){return a.length?Math.round(sum(a)/a.length):0;};
+    lastCalc={cyc:cyc,total:src.length,top20:top20,vip:vip,rep:rep,sleep:sleep,risk:risk,warn:warnList,
+      avgN:(src.reduce(function(n,r){return n+r.n;},0)/src.length),avgAmt:avg(src),bad:bad,
+      demo:calcSrc==='demo'};
+    var pct=function(a){return Math.round(a.length/src.length*100);};
+    var html='<div class="tiers">'
+      +'<div class="tier vip"><div class="nm">👑 鐵粉 VIP</div><div class="big2">'+vip.length+' 人</div><div class="dt">'+pct(vip)+'%　平均累積 '+nf(avg(vip))+' 元<br>90 天內買 3 次以上，或 90 天內有買且金額前 20%</div></div>'
+      +'<div class="tier rep"><div class="nm">🛍️ 回購客</div><div class="big2">'+rep.length+' 人</div><div class="dt">'+pct(rep)+'%　平均累積 '+nf(avg(rep))+' 元<br>還在週期內，但次數還不夠多</div></div>'
+      +'<div class="tier sleep"><div class="nm">😴 沉睡客</div><div class="big2">'+sleep.length+' 人</div><div class="dt">'+pct(sleep)+'%　平均累積 '+nf(avg(sleep))+' 元<br>超過 '+(cyc*2)+' 天（週期 2 倍）沒再買</div></div>'
+      +'</div>';
+    html+='<div class="callout" style="margin-top:13px"><b>全體：</b>'+src.length+' 人，平均購買 '+lastCalc.avgN.toFixed(1)+' 次、平均累積 '+nf(lastCalc.avgAmt)+' 元；金額前 20% 的門檻是 <b>'+nf(top20)+' 元</b>。'
+      +(bad?'<br><span style="color:#c6453a">有 '+bad+' 行讀不出來（日期或數字格式不對），已跳過。</span>':'')+'</div>';
+    if(risk.length){
+      html+='<div class="riskbox"><h4>🚨 今天最該先發訊息的 '+risk.length+' 位：高價值，而且已經沉睡</h4>'
+        +'<p style="font-size:.9rem;line-height:1.75">這幾位累積金額在前 20%，但已經超過 '+(cyc*2)+' 天沒買。他們已經信任你，喚醒成本最低、回報也最高，這就是互動題 2 的答案。</p>'
+        +'<div class="idlist">'+risk.sort(function(a,b){return b.amt-a.amt;}).slice(0,12).map(function(r){
+          return '<span>'+esc(r.id)+'　'+nf(r.amt)+' 元　'+r.days+' 天沒買</span>';}).join('')+'</div></div>';
+    }
+    if(warnList.length){
+      html+='<div class="callout warn" style="margin-top:11px"><b>⚠️ 還有 '+warnList.length+' 位正在變冷：</b>'
+        +'高金額、已經超過回購週期但還沒到 2 倍。現在發一則關懷，比等他睡著再喚醒容易得多。<div class="idlist">'
+        +warnList.sort(function(a,b){return b.amt-a.amt;}).slice(0,10).map(function(r){return '<span>'+esc(r.id)+'　'+r.days+' 天</span>';}).join('')+'</div></div>';
+    }
+    if(vip.length/src.length>0.35){
+      html+='<div class="callout warn" style="margin-top:11px"><b>🤔 VIP 佔 '+pct(vip)+'%，會不會太多了？</b>'
+        +'VIP 超過三分之一，「專屬感」就不稀罕了，手寫卡和限量預留也做不完。'
+        +'想收緊的話，把「90 天內 3 次」改成 4 次，或把 90 天縮短到 60 天，再算一次看看人數。'
+        +'這也是提示詞 P1 第 5 點要 GPT 幫你判斷的事：門檻合不合理，有沒有例外要人工確認。</div>';
+    }
+    html+='<p class="muted-note" style="margin-top:10px">這裡用的規則：<b>VIP</b>＝90 天內買 3 次以上，或 90 天內有買且累積金額在前 20%；<b>沉睡客</b>＝超過回購週期 2 倍沒再買；其餘為<b>回購客</b>。簡報上的範例寫「或累積金額前 20%」，這裡多加了「90 天內有買」這個條件，把「以前買很多、但已經冷掉」的人放進沉睡客的優先名單，而不是當成 VIP。你可以調整上面的回購週期再算一次。</p>';
+    document.getElementById('calcOut').innerHTML=html;
+    document.getElementById('calcStatus').textContent='已用 '+src.length+' 筆資料計算';
+    track('calc_tiers',{src:calcSrc,cycle:cyc});
+  }
+  function calcText(){
+    if(!lastCalc)return '';
+    var c=lastCalc;
+    var L=['【三層分群結果】'+(c.demo?'（用課堂練習資料）':''),
+      '回購週期設定：'+c.cyc+' 天，沉睡門檻：超過 '+(c.cyc*2)+' 天沒再買',
+      '總人數：'+c.total+' 人　平均購買 '+c.avgN.toFixed(1)+' 次　平均累積 '+nf(c.avgAmt)+' 元　金額前 20% 門檻 '+nf(c.top20)+' 元',
+      '',
+      '鐵粉 VIP：'+c.vip.length+' 人',
+      '回購客：'+c.rep.length+' 人',
+      '沉睡客：'+c.sleep.length+' 人'];
+    if(c.risk.length){
+      L.push('','高價值且已沉睡（最該先喚醒）：'+c.risk.slice(0,12).map(function(r){return r.id+'（'+nf(r.amt)+' 元，'+r.days+' 天沒買）';}).join('、'));
+    }
+    if(c.warn.length){
+      L.push('高金額正在變冷（預警）：'+c.warn.slice(0,10).map(function(r){return r.id+'（'+r.days+' 天）';}).join('、'));
+    }
+    L.push('','請依這個分群結果，接著執行提示詞 P2：產出三層會員經營策略圖。');
+    return L.join('\n');
+  }
+
+  /* ---------- LINE 費用試算 ---------- */
+  var TIERS={light:{n:'輕用量',fee:0,free:200,add:false},mid:{n:'中用量',fee:1000,free:3000,add:false},high:{n:'高用量',fee:1400,free:6000,add:true}};
+  function lineCalc(){
+    var el=document.getElementById('lineOut'); if(!el)return;
+    var f=Math.max(0,parseInt(document.getElementById('lineFriends').value,10)||0);
+    var s=Math.max(0,parseInt(document.getElementById('lineSleep').value,10)||0);
+    var tk=document.getElementById('lineTier').value, T=TIERS[tk];
+    state.line={f:f,s:s,t:tk}; save();
+    function cost(send){
+      if(send<=T.free)return {over:0,extra:0,ok:true};
+      var over=send-T.free;
+      if(!T.add)return {over:over,extra:null,ok:false};
+      return {over:over,extra:over*0.2,ok:true};
+    }
+    var a=cost(f), b=cost(s);
+    var L=[];
+    L.push('方案：'+T.n+'　月費 '+nf(T.fee)+' 元　每月免費 '+nf(T.free)+' 則');
+    L.push('');
+    L.push('① 全體群發 1 次 ＝ '+nf(f)+' 則');
+    if(a.ok&&a.over===0)L.push('　　還在免費額度內，這次不用加錢。');
+    else if(!a.ok)L.push('　　超出 '+nf(a.over)+' 則，而且這個方案不能加購 → 這些人收不到訊息。');
+    else L.push('　　超出 '+nf(a.over)+' 則，加購約 '+nf(a.extra)+' 元。');
+    L.push('');
+    L.push('② 只推給沉睡客 ＝ '+nf(s)+' 則');
+    if(b.ok&&b.over===0)L.push('　　還在免費額度內，這次 0 元。');
+    else if(!b.ok)L.push('　　超出 '+nf(b.over)+' 則，這個方案不能加購。');
+    else L.push('　　超出 '+nf(b.over)+' 則，加購約 '+nf(b.extra)+' 元。');
+    var saveN=f-s;
+    if(saveN>0){
+      L.push('');
+      L.push('分眾之後，這一次少發 '+nf(saveN)+' 則。');
+      if(T.add&&a.extra&&b.extra!==null)L.push('換算下來這一檔省 '+nf((a.extra||0)-(b.extra||0))+' 元，而且打擾的人更少。');
+      else if(!a.ok&&b.ok&&b.over===0)L.push('更重要的是：全體群發會有 '+nf(a.over)+' 人根本收不到，分眾之後每個該收到的人都收得到。');
+    }
+    el.textContent=L.join('\n');
+  }
+
+  /* ---------- 喚醒四要素檢查 ---------- */
+  var PUSHDEMO='好久不見！上次你帶走的伯爵磅蛋糕，這週換上冬季限定桂圓口味了。11/9、11/10 可以領賣貨便全站冷凍免運券，再用回歸碼 BACK50 折 50 元，11/30 前有效。想吃就點這裡 → https://myship.7-11.com.tw/';
+  function pushCheck(){
+    var t=(document.getElementById('pushIn').value||'').trim();
+    var el=document.getElementById('pushOut');
+    if(!t){el.innerHTML='<p class="muted-note">先把推播文案貼上面那一格。</p>';return;}
+    var items=[
+      {k:'叫得出你',ok:/好久不見|上次|上回|你買過|還記得|老朋友|老顧客|熟客|之前你|曾經買/.test(t),
+       tip:'開頭提到他買過的商品或上次的互動，例如「上次你帶走的伯爵磅蛋糕」。'},
+      {k:'回來的理由',ok:/新品|新口味|限定|季節|上市|登場|補貨|免運|回歸|換季|新款|開賣/.test(t),
+       tip:'給一個「為什麼是現在」：新品、季節限定，或搭平台免運活動。'},
+      {k:'誘因＋期限',ok:(/折|優惠|券|碼|元|%|％|免運|加購|送/.test(t))&&(/\d{1,2}\/\d{1,2}|前有效|截止|到期|限時|倒數|前使用|天內|週內|月底/.test(t)),
+       tip:'誘因和期限要同時出現。只有折扣沒有期限，他明天也能買，就不急了。'},
+      {k:'一個行動',ok:(t.match(/https?:\/\//g)||[]).length===1||(/點這裡|點連結|立即|前往|看看/.test(t)&&(t.match(/https?:\/\//g)||[]).length<=1),
+       tip:(t.match(/https?:\/\//g)||[]).length>1?'偵測到多個連結。只放一個，不要讓他選。':'補一句明確的行動，例如「想吃就點這裡 →」加上賣場連結。'}
+    ];
+    var pass=items.filter(function(i){return i.ok;}).length;
+    var len=t.replace(/\s/g,'').length;
+    var html='<div class="callout'+(pass===4?' ok':(pass>=2?' warn':' bad'))+'" style="margin-top:12px"><div class="big">'
+      +(pass===4?'✅ 四要素都有，可以發了':'⚠️ 四要素過了 '+pass+' / 4')+'</div>';
+    html+='<div style="margin-top:9px">'+items.map(function(i){
+      return '<div style="margin-bottom:7px">'+(i.ok?'✅ ':'❌ ')+'<b>'+i.k+'</b>'+(i.ok?'':'　<span style="color:#8a5a18">'+esc(i.tip)+'</span>')+'</div>';
+    }).join('')+'</div>';
+    html+='<p class="muted-note" style="margin-top:8px">字數 '+len+' 字'
+      +(len>120?'　（有點長，LINE 推播建議 80 字以內，手機上會被摺疊）':(len<20?'　（有點短，補一點情境會更像真人）':'　（長度剛好）'))+'</p>';
+    html+='<p class="muted-note">這個檢查靠關鍵字判斷，只能當第一道。語氣對不對，還是要你自己唸一次看看像不像老闆在講話。</p></div>';
+    el.innerHTML=html;
+    track('push_check',{pass:pass});
+  }
+
+  /* ---------- 15 秒腳本 ---------- */
+  var SCKEYS=['who','hook','proof','cta'];
+  var SCDEMO={who:'沉睡客',hook:'冷凍蛋糕，也能吃出剛出爐的香？',proof:'切面特寫、回烤 30 秒、熱氣冒出來的瞬間',cta:'11/30 前輸入回歸碼 BACK50 折 50 元，點連結到賣貨便'};
+  function scText(){
+    var g=function(k){return (state.sc[k]||'').trim();};
+    if(!g('hook')&&!g('proof')&&!g('cta'))return '';
+    return ['【15 秒直式短影音腳本】','對象：'+(g('who')||'【還沒選】'),'',
+      '0 到 3 秒　鉤子','　畫面／字卡：'+(g('hook')||'【還沒填】'),'',
+      '3 到 10 秒　證據與情境','　畫面／字卡：'+(g('proof')||'【還沒填】'),'',
+      '10 到 15 秒　誘因與行動','　畫面／字卡：'+(g('cta')||'【還沒填】'),'',
+      '三鏡頭：鏡頭 1 特寫（切面、光澤、紋理）｜鏡頭 2 情境（有人在用，只拍手也可以）｜鏡頭 3 收尾（老闆或打包畫面＋字卡）',
+      '字卡每行 12 字以內；賣貨便賣場連結放在說明欄第一行。',
+      '',
+      '請依這個腳本，用提示詞 P7 幫我展開成完整分鏡表與 AI 生成指令。'].join('\n');
+  }
+  function scCalc(){
+    var el=document.getElementById('scOut'); if(!el)return;
+    var t=scText();
+    el.textContent=t||'三格填完，這裡會出現可以複製的腳本。';
+  }
+
+  /* ---------- 法規檢查 ---------- */
+  var LAWDEMO='每天一片，血糖穩穩不用怕！全台最好吃的低糖磅蛋糕，保證讓你瘦身無負擔，100% 天然無添加。';
+  function lawCheck(){
+    var t=(document.getElementById('lawIn').value||'').trim();
+    var el=document.getElementById('lawOut');
+    if(!t){el.innerHTML='<p class="muted-note">先把文案貼上面那一格。</p>';return;}
+    var hits=[];
+    LAWWORDS.forEach(function(g){
+      g.w.forEach(function(w){
+        if(t.indexOf(w)>=0)hits.push({w:w,t:g.t,s:g.s,f:g.f});
+      });
+    });
+    var high=hits.filter(function(h){return h.s==='high';});
+    var mid=hits.filter(function(h){return h.s==='mid';});
+    var low=hits.filter(function(h){return h.s==='low';});
+    var html;
+    if(!hits.length){
+      html='<div class="callout ok" style="margin-top:12px"><div class="big">✅ 沒掃到常見的高風險字</div>'
+        +'<p style="margin-top:7px">但這只是關鍵字比對。價格、優惠門檻、期限有沒有寫清楚，AI 畫面跟實際商品一不一致，這些還是要自己看一次。上架前再用提示詞 P9 的法規自檢跑一遍。</p></div>';
+    }else{
+      html='<div class="callout'+(high.length?' bad':' warn')+'" style="margin-top:12px"><div class="big">'
+        +(high.length?'🚨 掃到 '+high.length+' 個高風險字，建議一定要改':'⚠️ 掃到 '+hits.length+' 個要留意的字')+'</div>';
+      html+='<div class="tw" style="margin-top:11px;box-shadow:none"><table><tr><th>字詞</th><th>風險</th><th>建議改法</th></tr>'
+        +high.concat(mid).concat(low).map(function(h){
+          var tag=h.s==='high'?'🚨 ':(h.s==='mid'?'⚠️ ':'💡 ');
+          return '<tr><td><b>'+esc(h.w)+'</b></td><td>'+tag+esc(h.t)+'</td><td>'+esc(h.f)+'</td></tr>';
+        }).join('')+'</table></div>';
+      html+='<p class="muted-note" style="margin-top:9px">食品不能宣稱醫療效能（食品安全衛生管理法第 28 條），化粧品不能誇大或宣稱醫療效果。這個檢查器只比對常見字眼，不是法律意見。</p></div>';
+    }
+    el.innerHTML=html;
+    track('law_check',{hits:hits.length,high:high.length});
+  }
+
+  /* ---------- 30 天方案 ---------- */
+  var PLKEYS=['name','who','offer','ch','kpi','first'];
+  function plText(){
+    var g=function(k){return (state.plan[k]||'').trim();};
+    if(!PLKEYS.some(function(k){return g(k);}))return '';
+    return ['【30 天會員回購行動方案】',
+      '活動名稱：'+(g('name')||'【還沒填】'),
+      '對象層級與人數：'+(g('who')||'【還沒填】'),
+      '誘因＋期限：'+(g('offer')||'【還沒填】'),
+      '管道與時程：'+(g('ch')||'【還沒填】'),
+      '成功指標：'+(g('kpi')||'【還沒填】'),
+      '',
+      '我回去第一件要做的事：'+(g('first')||'【還沒填】'),
+      '',
+      '喚醒回購率 ＝ 推播後 14 天內下單人數 ÷ 收到推播人數',
+      '',
+      '請依這個草案，用提示詞 P10 幫我展開成完整表格，並列出明天就能做的 3 件事，以及最可能讓計畫停下來的 1 個風險。'].join('\n');
+  }
+  function plCalc(){
+    var el=document.getElementById('plOut'); if(!el)return;
+    var t=plText(), n=PLKEYS.filter(function(k){return (state.plan[k]||'').trim();}).length;
+    el.textContent=t?(n+' / 6 格已填\n\n'+t):'填完上面，這裡會出現可以複製的 30 天行動方案草案。';
+  }
+
+  /* ---------- KPI 試算 ---------- */
+  function kpiCalc(){
+    var el=document.getElementById('kpOut'); if(!el)return;
+    var g=function(id){return Math.max(0,parseInt((document.getElementById(id)||{}).value,10)||0);};
+    var sent=g('kp_sent'), click=g('kp_click'), buy=g('kp_buy'), aov=g('kp_aov');
+    state.kpi={sent:sent,click:click,buy:buy,aov:aov}; save();
+    if(!sent){el.textContent='填好四格，這裡會算出喚醒回購率、點擊率與這一檔帶回多少營業額。';return;}
+    var cr=click/sent*100, rr=buy/sent*100, rev=buy*aov;
+    var L=['喚醒回購率　'+rr.toFixed(1)+'%　（'+buy+' ÷ '+sent+'）',
+      '推播點擊率　'+cr.toFixed(1)+'%　（'+click+' ÷ '+sent+'）',
+      '這一檔帶回　'+nf(rev)+' 元營業額'];
+    if(click)L.push('點擊之後的成交率　'+(buy/click*100).toFixed(1)+'%');
+    L.push('');
+    if(rr>=10)L.push('👍 喚醒回購率 10% 以上算不錯，這個誘因可以留著下個月再用一次。');
+    else if(rr>=5)L.push('🙂 還可以。下一檔試試看換誘因，或把名單縮小到金額更高的那一群。');
+    else if(buy===0)L.push('這一檔沒有人下單。先看點擊率：點擊低代表第一句不夠吸引人；點了不買代表誘因或商品不對。');
+    else L.push('偏低。先看是點擊率低（第一句的問題）還是點了不買（誘因的問題），一次只改一個再測。');
+    L.push('');
+    L.push('每個月算一次，就知道哪一層、哪種誘因最有效。');
+    el.textContent=L.join('\n');
+  }
+
+  /* ---------- 提示詞 ---------- */
+  var pFilter='all';
+  function renderPFilter(){
+    var h=document.getElementById('pFilter'); if(!h)return;
+    var gs=['all'].concat(PROMPTS.map(function(p){return p.g;}).filter(function(v,i,a){return a.indexOf(v)===i;}));
+    h.innerHTML=gs.map(function(g){
+      var n=g==='all'?PROMPTS.length:PROMPTS.filter(function(p){return p.g===g;}).length;
+      return '<button class="chip'+(pFilter===g?' on':'')+'" type="button" data-pf="'+esc(g)+'">'+(g==='all'?'全部':esc(g))+' '+n+'</button>';
+    }).join('');
+  }
+  function renderPrompts(){
+    var list=PROMPTS.filter(function(p){return pFilter==='all'||p.g===pFilter;});
+    document.getElementById('promptHost').innerHTML=list.map(function(p){
+      return '<div class="tcard" id="prompt_'+p.id+'"><div class="hd">'
+        +'<h3>'+esc(p.t)+'</h3><span class="badge o">'+esc(p.g)+'</span></div>'
+        +'<p class="muted-note" style="margin:-4px 0 8px"><b>怎麼用：</b>'+esc(p.how)+'　<b>工具：</b>'+esc(p.tool)+'</p>'
+        +'<div class="pbody" id="pb_'+p.id+'">'+esc(p.b)+'</div>'
+        +(p.tip?'<div class="upg">💡 '+esc(p.tip)+'</div>':'')
+        +'<div class="prow"><button class="btn btn-primary btn-sm" data-cp="'+p.id+'" type="button">📋 複製提示詞</button>'
+        +'<button class="btn btn-ghost btn-sm" data-ex="'+p.id+'" type="button">展開全文</button>'
+        +'<span class="ai-go"><a href="https://chatgpt.com/" target="_blank" rel="noopener">🤖 ChatGPT</a><a href="https://gemini.google.com/" target="_blank" rel="noopener">✨ Gemini</a></span>'
+        +'<span class="src">'+esc(p.src)+'</span></div></div>';
+    }).join('');
+  }
+  function goPrompt(id){
+    if(pFilter!=='all'){pFilter='all';renderPFilter();renderPrompts();}
+    switchTab('ai');
+    setTimeout(function(){
+      var el=document.getElementById('prompt_'+id); if(!el)return;
+      el.scrollIntoView({behavior:'smooth',block:'center'});
+      el.style.boxShadow='0 0 0 3px rgba(232,101,26,.4)';
+      setTimeout(function(){el.style.boxShadow='';},2200);
+    },160);
+  }
+  window.goPrompt=goPrompt;
+
+  /* ---------- 工具與練習檔 ---------- */
+  function renderTools(){
+    var h=document.getElementById('toolHost'); if(!h)return;
+    h.innerHTML=TOOLS.map(function(t){
+      var href=siteUTM(t.u), disp=t.u.replace(/^https?:\/\//,'').replace(/\/$/,'');
+      return '<div class="toolcard"><div class="tn">'+(t.s?'<span class="star">⭐</span>':'')+esc(t.n)+'</div>'
+        +'<div class="td">'+esc(t.d)+'</div><div class="tu">'+esc(disp)+'</div>'
+        +(t.w?'<div class="warn2">⚠️ '+esc(t.w)+'</div>':'')
+        +'<a class="btn btn-primary btn-sm go" href="'+esc(href)+'" target="_blank" rel="noopener">開啟 →</a></div>';
+    }).join('');
+    document.querySelectorAll('a[data-own]').forEach(function(a){
+      if(a.getAttribute('data-utm'))return;
+      a.setAttribute('data-utm','1'); a.href=siteUTM(a.getAttribute('href'));
+    });
+  }
+  function csvText(){
+    return '會員代號,最近購買日,購買次數,累積金額,主要品類\n'
+      +ORDERS.map(function(l){return l.split('|').join(',');}).join('\n');
+  }
+  function renderPrev(){
+    var h=document.getElementById('prevHost'); if(!h)return;
+    h.innerHTML='<table><tr><th>會員代號</th><th>最近購買日</th><th>購買次數</th><th>累積金額</th><th>主要品類</th></tr>'
+      +ORDERS.map(function(l){var p=l.split('|');
+        return '<tr><td>'+p[0]+'</td><td>'+p[1]+'</td><td>'+p[2]+'</td><td>'+nf(+p[3])+'</td><td>'+esc(p[4])+'</td></tr>';}).join('')+'</table>';
+  }
+
+  /* ---------- 報到與交件 ---------- */
+  var subMode='text', subFileObj=null;
+  function renderWho(){
+    ['whoBox','whoBox2'].forEach(function(id){
+      var box=document.getElementById(id); if(!box)return;
+      if(!loggedIn()){box.innerHTML='<div class="callout warn"><b>還沒報到：</b>填個名字就好，答對的分數才記得到你身上，小禮物也照這個認。<br><button class="btn btn-primary btn-sm" type="button" style="margin-top:8px" onclick="openReg()">🙋 現在報到</button></div>';return;}
+      box.innerHTML='<div class="who"><span class="g">'+esc(state.nick)+'</span><span>'+esc(state.brand||'未填品牌')+(state.cat?' · '+esc(state.cat):'')+'</span><button type="button" onclick="openReg()">改資料</button></div>';
+    });
+  }
+  function safe2(s){return String(s||'').replace(/[^a-zA-Z0-9]/g,'_').slice(0,24)||'x';}
+  async function shrink(file){
+    try{
+      if(file.size<900*1024&&/image\/(png|jpe?g|webp|gif)/i.test(file.type||''))return file;
+      if(!window.createImageBitmap)return file;
+      var bmp=await createImageBitmap(file);
+      var max=1600, r=Math.min(1,max/Math.max(bmp.width,bmp.height));
+      var c=document.createElement('canvas'); c.width=Math.round(bmp.width*r); c.height=Math.round(bmp.height*r);
+      c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+      var blob=await new Promise(function(res){c.toBlob(res,'image/jpeg',0.86);});
+      if(blob&&(blob.size<file.size||!/image\/(png|jpe?g|webp|gif)/i.test(file.type||'')))return blob;
+    }catch(e){}
+    return file;
+  }
+  async function uploadImage(file){
+    var ext=/jpeg/.test(file.type||'')?'jpg':((((file.name||'img').split('.').pop())||'png').toLowerCase().replace(/[^a-z0-9]/g,'')||'png');
+    var path=COURSE+'/'+safe2(COHORT)+'/'+Date.now()+'-'+Math.floor(Math.random()*1e7)+'.'+ext;
+    var r=await fetchT(SUPA_URL+'/storage/v1/object/'+BUCKET+'/'+path,{method:'POST',headers:Object.assign(H(),{'Content-Type':file.type||'image/png','x-upsert':'false'}),body:file},60000);
+    if(!r.ok){var t='';try{t=await r.text();}catch(e){} throw new Error('圖片上傳失敗 '+r.status+' '+t.slice(0,60));}
+    return SUPA_URL+'/storage/v1/object/public/'+BUCKET+'/'+path;
+  }
+  function friendlyErr(e){
+    var m=String((e&&e.message)||e||'');
+    try{console.error('[upload]',m);}catch(x){}
+    if(/Failed to fetch|NetworkError|abort|timeout/i.test(m))return '網路不穩，這一份沒送出去。等幾秒再按一次，你打的字還在。';
+    if(/413|too large|exceeded/i.test(m))return '圖片太大傳不上去，改用截圖或換一張小一點的。';
+    if(/mime|content-?type|415/i.test(m))return '這個圖片格式不支援，用截圖（PNG 或 JPG）再傳一次。';
+    return '沒送出去，再按一次試試。連續兩次都失敗就舉手。';
+  }
+  async function sendText(task,content,statusId,okMsg){
+    if(!loggedIn()){toast('先報到才能交件');openReg();return false;}
+    if(!content||!content.trim()){toast('內容還是空的');return false;}
+    try{
+      await insertSub({course:COURSE,cohort:COHORT,team:myTeam(),submitter:state.nick,task:task,kind:'text',content:content});
+      state.tools.uploaded=1; save(); updateHud(); syncRow();
+      if(statusId){var el=document.getElementById(statusId); if(el)el.textContent='✅ 已送出（'+new Date().toLocaleTimeString('zh-TW',{hour12:false,hour:'2-digit',minute:'2-digit'})+'）';}
+      toast(okMsg||'✅ 已送出'); loadSubs(); loadBoard(); return true;
+    }catch(e){ toast(friendlyErr(e)); return false; }
+  }
+  async function doSubmit(){
+    if(!loggedIn()){toast('先報到才能交件');openReg();return;}
+    var btn=document.getElementById('subBtn'), st=document.getElementById('subStatus'), orig=btn.innerHTML;
+    var task=(document.getElementById('subTask')||{}).value||'extra';
+    var base={course:COURSE,cohort:COHORT,team:myTeam(),submitter:state.nick,task:task};
+    btn.disabled=true;
+    try{
+      if(subMode==='text'){
+        var txt=(document.getElementById('subText').value||'').trim();
+        if(!txt){toast('請先填寫內容');btn.disabled=false;btn.innerHTML=orig;return;}
+        btn.innerHTML='送出中…';
+        await insertSub(Object.assign({kind:'text',content:txt},base));
+        document.getElementById('subText').value=''; state.drafts=''; save();
+      }else{
+        if(!subFileObj){toast('請先選一張圖片');btn.disabled=false;btn.innerHTML=orig;return;}
+        btn.innerHTML='處理圖片…';
+        var f2=await shrink(subFileObj);
+        if(f2.size>10*1024*1024){toast('圖片超過 10MB，請換一張或先截圖');btn.disabled=false;btn.innerHTML=orig;return;}
+        btn.innerHTML='上傳中…';
+        var url=await uploadImage(f2);
+        await insertSub(Object.assign({kind:'image',image_url:url},base));
+        subFileObj=null; document.getElementById('subFile').value='';
+        var dz=document.getElementById('dropz'); dz.classList.remove('has');
+        dz.innerHTML='📷 點這裡選一張圖片<br><small>GPT 畫面截圖、影片截圖都可以（10MB 內）<br>⚠️ 畫面裡有顧客姓名或電話請先遮掉</small>';
+      }
+      state.tools.uploaded=1; save(); updateHud(); syncRow();
+      toast('✓ 已送出！'); st.textContent='✓ 已送出，講師後台看得到了。';
+      track('submit_work',{task:task});
+      loadSubs(); loadBoard();
+    }catch(e){ var msg=friendlyErr(e); toast(msg); st.textContent='⚠️ '+msg; }
+    btn.disabled=false; btn.innerHTML=orig;
+  }
+  function fmtTime(s){try{return new Date(s).toLocaleString('zh-TW',{hour12:false,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
+  var TASKNAME={m1:'成果 1 策略圖',m2:'成果 2 行事曆＋推播',m3:'成果 3 影音企劃',m4:'成果 4 30 天方案',
+    push:'喚醒推播自檢',sc:'15 秒腳本',plan:'30 天方案草案',extra:'補充'};
+  async function loadSubs(){
+    var host=document.getElementById('subList'); if(!host)return;
+    if(!loggedIn()){host.innerHTML='<p class="muted-note">報到後，這裡會顯示你交過的東西。</p>';return;}
+    try{
+      var u=SUPA_URL+'/rest/v1/lw_workshop_submissions?course=eq.'+encodeURIComponent(COURSE)+'&cohort=eq.'+encodeURIComponent(COHORT)
+        +'&submitter=eq.'+encodeURIComponent(state.nick)+'&select=submitter,task,kind,content,image_url,created_at&order=created_at.asc';
+      var r=await fetchT(u,{headers:H()},15000); var rows=await r.json(); if(!Array.isArray(rows))rows=[];
+      if(!rows.length){host.innerHTML='<p class="muted-note">你還沒交過。做完一份就送一份，不用等到下課 🙌</p>';return;}
+      host.innerHTML=rows.map(function(x){
+        var body=(x.kind==='image')
+          ? '<a href="'+esc(x.image_url)+'" target="_blank" rel="noopener"><img src="'+esc(x.image_url)+'" loading="lazy" alt="交件"></a>'
+          : '<div class="txt">'+esc((x.content||'').slice(0,300))+((x.content||'').length>300?'…':'')+'</div>';
+        return '<div class="subitem"><span class="vN">'+esc(TASKNAME[x.task]||'補充')+'</span><div class="body"><div class="who2">'+fmtTime(x.created_at)+'</div>'+body+'</div></div>';
+      }).join('');
+    }catch(e){host.innerHTML='<p class="muted-note">讀取失敗，稍後再試。</p>';}
+  }
+  async function loadBoard(){
+    var host=document.getElementById('board'); if(!host)return;
+    try{
+      var base='course=eq.'+encodeURIComponent(COURSE)+'&cohort=eq.'+encodeURIComponent(COHORT);
+      var r1=await fetchT(SUPA_URL+'/rest/v1/lw_workshop_submissions?'+base+'&select=submitter,task',{headers:H()},15000);
+      var r2=await fetchT(SUPA_URL+'/rest/v1/lw_line_students?'+base+'&select=code,quiz',{headers:H()},15000);
+      var subs=await r1.json(), st=await r2.json(); if(!Array.isArray(subs))subs=[]; if(!Array.isArray(st))st=[];
+      var people=st.length, who={}; subs.forEach(function(x){who[x.submitter]=1;});
+      var keys=Object.keys(POLLS).filter(function(k){return POLLS[k].ans;});
+      var tot=0,right=0;
+      st.forEach(function(s){var q=s.quiz||{};keys.forEach(function(k){if(q[k]){tot++;if(q[k]===POLLS[k].ans)right++;}});});
+      var done4=st.filter(function(s){var o=(s.quiz||{}).fin;return Array.isArray(o)&&o.filter(Boolean).length===FINAL.length;}).length;
+      host.innerHTML=[
+        ['報到人數',people],['交件人數',Object.keys(who).length],['交件總數',subs.length],
+        ['全場答對率',(tot?Math.round(right/tot*100):0)+'%'],['四項全交',done4+' 人']
+      ].map(function(x){return '<div class="mb"><div class="pt">'+x[1]+'</div><div class="sm">'+x[0]+'</div></div>';}).join('');
+    }catch(e){ host.innerHTML='<p class="muted-note">統計讀取中…</p>'; }
+  }
+  async function refreshStats(){
+    try{
+      var u=SUPA_URL+'/rest/v1/lw_line_students?course=eq.'+encodeURIComponent(COURSE)+'&cohort=eq.'+encodeURIComponent(COHORT)+'&select=code,quiz';
+      var r=await fetchT(u,{headers:H()},12000); var rows=await r.json(); if(!Array.isArray(rows))return;
+      Object.keys(POLLS).forEach(function(k){pollAgg[k]={};pollN[k]=0;});
+      rows.forEach(function(row){
+        var q=row.quiz||{};
+        Object.keys(POLLS).forEach(function(k){ var v=q[k]; if(v){pollAgg[k][v]=(pollAgg[k][v]||0)+1;pollN[k]++;} });
+      });
+      var sig=JSON.stringify([pollAgg,pollN,state.quiz]);
+      if(sig===statSig)return;
+      statSig=sig; renderAllPolls(); myScore();
+    }catch(e){}
+  }
+  function myScore(){
+    var el=document.getElementById('myScore'); if(!el)return;
+    if(!loggedIn()){el.textContent='報到後顯示。';return;}
+    var keys=Object.keys(POLLS).filter(function(k){return POLLS[k].ans;});
+    var right=keys.filter(function(k){return state.quiz[k]===POLLS[k].ans;});
+    var ans=keys.filter(function(k){return state.quiz[k];}).length;
+    el.innerHTML='<b>'+esc(state.nick)+'</b>（'+esc(state.brand||'未填品牌')+'）互動題作答 <b>'+ans+' / '+keys.length+'</b> 題，答對 <b>'+right.length+'</b> 題。'
+      +(right.length===keys.length&&keys.length?'　🎉 全對！':'')
+      +'<br><span class="muted-note">現場舉手搶答的小禮物由講師另計，這裡只算你在網站上作答的。</span>';
+  }
+
+  /* ---------- 報到 ---------- */
+  function openReg(){
+    document.getElementById('regNick').value=state.nick||'';
+    document.getElementById('regBrand').value=state.brand||'';
+    document.getElementById('regCat').value=state.cat||'';
+    var er=document.getElementById('regErr'); er.style.display='none'; er.style.color=''; er.textContent='請填名字或暱稱';
+    document.getElementById('regOverlay').classList.add('show');
+  }
+  window.openReg=openReg;
+  function closeReg(){document.getElementById('regOverlay').classList.remove('show');}
+  async function doReg(){
+    var b=document.getElementById('regBtn'); if(b.disabled)return;
+    var nick=(document.getElementById('regNick').value||'').trim();
+    var brand=(document.getElementById('regBrand').value||'').trim();
+    var cat=document.getElementById('regCat').value||'';
+    var er=document.getElementById('regErr');
+    if(!nick){er.style.display='block';return;}
+    var changed=(state.nick!==nick||state.brand!==brand);
+    state.nick=nick; state.brand=brand; state.cat=cat;
+    if(changed){ state.quiz={}; }
+    save();
+    var ob=b.textContent; b.disabled=true; b.textContent='報到中…';
+    er.style.display='block'; er.style.color='var(--mute)'; er.textContent='報到中，網路慢的話最多等 5 秒…';
+    try{
+      var row=await fetchMe(5000);
+      if(row){
+        var q=(row.quiz&&typeof row.quiz==='object')?row.quiz:{};
+        state.quiz=q;
+        ['prep','m1','m2','m3','fin'].forEach(function(k){if(Array.isArray(q[k]))state[k]=q[k];});
+        ['sc','plan','line','kpi'].forEach(function(k){if(q[k]&&typeof q[k]==='object')state[k]=q[k];});
+        if(q.cyc)state.cyc=q.cyc;
+      }
+      save(); closeReg(); renderAll(); syncRow(); refreshStats(); loadSubs(); loadBoard();
+      track('reg',{});
+      try{if(window.fbq)fbq('trackCustom','Register');}catch(e){}
+      toast('✓ 報到完成，'+state.nick);
+    }finally{
+      b.disabled=false; b.textContent=ob;
+      er.style.display='none'; er.style.color=''; er.textContent='請填名字或暱稱';
+    }
+  }
+
+  /* ---------- HUD 與整體渲染 ---------- */
+  function updateHud(){
+    document.getElementById('hud').classList.add('show');
+    var ansd=Object.keys(POLLS).filter(function(k){return POLLS[k].ans&&state.quiz[k];}).length;
+    var steps=(loggedIn()?1:0)
+      +(state.prep.filter(Boolean).length>=5?1:0)
+      +(lastCalc||state.m1.filter(Boolean).length>=3?1:0)
+      +(state.m1.filter(Boolean).length===M1.length?1:0)
+      +(state.m2.filter(Boolean).length===M2.length?1:0)
+      +(state.m3.filter(Boolean).length===M3.length?1:0)
+      +(ansd>=4?1:0)
+      +(state.tools.uploaded?1:0);
+    document.getElementById('hudGp').firstChild.textContent=loggedIn()?(state.nick+' '):'👋 ';
+    document.getElementById('hudGpSub').textContent=loggedIn()?(steps+' / 8 完成'):'點我報到';
+    document.getElementById('hudBar').style.width=(steps/8*100)+'%';
+  }
+  function renderAll(){
+    renderWho(); renderAllPolls();
+    renderChecks('prepHost',PREP,'prep',false);
+    renderChecks('m1Chk',M1,'m1',true);
+    renderChecks('m2Chk',M2,'m2',true);
+    renderChecks('m3Chk',M3,'m3',true);
+    renderChecks('finalChk',FINAL,'fin',true);
+    finalVerdict(); renderTools(); renderPrev(); myScore(); updateHud();
+    SCKEYS.forEach(function(k){var el=document.getElementById('sc_'+k); if(el&&state.sc[k]!==undefined)el.value=state.sc[k];});
+    PLKEYS.forEach(function(k){var el=document.getElementById('pl_'+k); if(el&&state.plan[k]!==undefined)el.value=state.plan[k];});
+    if(state.line.f!==undefined){
+      var lf=document.getElementById('lineFriends'); if(lf)lf.value=state.line.f;
+      var ls=document.getElementById('lineSleep'); if(ls)ls.value=state.line.s;
+      var lt=document.getElementById('lineTier'); if(lt&&state.line.t)lt.value=state.line.t;
+    }
+    if(state.kpi.sent!==undefined){
+      ['sent','click','buy','aov'].forEach(function(k){var el=document.getElementById('kp_'+k); if(el&&state.kpi[k]!==undefined)el.value=state.kpi[k];});
+    }
+    var ci=document.getElementById('cycleIn'); if(ci)ci.value=state.cyc;
+    document.querySelectorAll('[data-cyc]').forEach(function(b){b.classList.toggle('on',+b.getAttribute('data-cyc')===state.cyc);});
+    var d=document.getElementById('subText'); if(d&&state.drafts)d.value=state.drafts;
+    scCalc(); plCalc(); lineCalc(); kpiCalc();
+  }

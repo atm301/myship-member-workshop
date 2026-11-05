@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>講師後台｜賣貨便會員經營 × AI 實戰工作坊</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%9B%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--org:#E8651A;--org-d:#C44F0D;--amber:#F2A33C;--deep:#2b1a10;
+  --ink:#241a13;--mute:#857062;--bg:#fdf8f4;--bg2:#fff;--line:#f0ded0;--tint:#FFF1E6;
+  --red:#c6453a;--green:#1f8a62;--blue:#2a6fb8}
+body{font-family:'Noto Sans TC',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;padding-bottom:60px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header{background:var(--deep);color:#fff;padding:14px 0;position:sticky;top:0;z-index:20}
+header .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+header h1{font-size:1.05rem;font-weight:900}
+header .sub{font-size:.76rem;opacity:.82;display:block;font-weight:400}
+header .sp{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+input,select,button,textarea{font-family:inherit;font-size:.9rem}
+.inp{border:1px solid var(--line);border-radius:9px;padding:7px 11px;background:#fff;color:var(--ink)}
+.btn{border:0;border-radius:999px;padding:8px 16px;font-weight:800;cursor:pointer;background:var(--org);color:#fff}
+.btn.g{background:#fff;color:var(--org-d);border:1px solid var(--line)}
+.btn.sm{padding:5px 12px;font-size:.8rem}
+.tabs{display:flex;gap:7px;overflow-x:auto;padding:12px 0 2px}
+.tabs button{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--mute);border-radius:999px;padding:7px 15px;font-weight:800;cursor:pointer}
+.tabs button.on{background:var(--org);border-color:var(--org);color:#fff}
+section{display:none;padding:14px 0 40px}
+section.on{display:block}
+h2.t{font-size:1.1rem;font-weight:900;margin:18px 0 10px;padding-left:10px;border-left:5px solid var(--org)}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.cards{display:grid;gap:11px;grid-template-columns:repeat(auto-fit,minmax(158px,1fr))}
+.c{background:var(--bg2);border:1px solid var(--line);border-radius:13px;padding:13px;box-shadow:0 8px 20px rgba(45,26,16,.06)}
+.c b{display:block;font-size:1.55rem;font-weight:900;color:var(--org-d);line-height:1.25}
+.c span{font-size:.8rem;color:var(--mute);font-weight:700}
+.c.o b{color:var(--amber)} .c.g b{color:var(--green)} .c.b b{color:var(--blue)} .c.r b{color:var(--red)}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:13px;overflow:hidden;font-size:.88rem;box-shadow:0 8px 20px rgba(45,26,16,.06)}
+th{background:var(--org);color:#fff;text-align:left;padding:9px 11px;font-weight:800;white-space:nowrap}
+td{padding:9px 11px;border-top:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:#fffaf6}
+.tw{overflow-x:auto}
+.bar{height:9px;border-radius:999px;background:var(--tint);overflow:hidden;min-width:70px}
+.bar i{display:block;height:100%;background:var(--org)}
+.bar.o i{background:var(--amber)}
+.sub2{background:#fff;border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:10px;box-shadow:0 8px 20px rgba(45,26,16,.06)}
+.sub2 .hd{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:7px}
+.tag{background:var(--amber);color:#4a2f06;border-radius:999px;padding:2px 11px;font-size:.74rem;font-weight:800}
+.tag.t{background:var(--org);color:#fff} .tag.b{background:var(--blue);color:#fff} .tag.g{background:var(--green);color:#fff}
+.who{font-weight:900}
+.tm{font-size:.76rem;color:var(--mute);margin-left:auto}
+.body{white-space:pre-wrap;font-size:.87rem;background:#fffaf6;border:1px solid var(--line);border-radius:10px;padding:10px;max-height:320px;overflow:auto}
+.body img,.sub2 img{max-width:100%;border-radius:10px}
+.q{background:#fff;border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:10px}
+.q .qq{font-weight:900;margin-bottom:7px}
+.opt{display:flex;gap:9px;align-items:center;margin-bottom:5px;font-size:.87rem}
+.opt .k{width:22px;height:22px;border-radius:50%;background:var(--tint);color:var(--org-d);font-weight:900;display:flex;align-items:center;justify-content:center;font-size:.76rem;flex:0 0 auto}
+.opt .k.ok{background:var(--green);color:#fff}
+.opt .lb{flex:1;min-width:120px}
+.opt .pc{font-weight:900;color:var(--org-d);width:64px;text-align:right}
+.note{color:var(--mute);font-size:.85rem;margin:8px 0}
+.warn{background:#fffaf0;border:1px solid #f6e2b8;border-left:5px solid var(--amber);border-radius:12px;padding:12px 14px;margin:10px 0;font-size:.9rem}
+.warn b{color:#8a5a18}
+.warn.red{background:#fff5f4;border-color:#f6d7d2;border-left-color:var(--red)}
+.warn.red b{color:var(--red)}
+.pct{font-weight:900}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--line);margin-right:3px}
+.dot.on{background:var(--green)}
+#msg{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(12px);background:var(--deep);color:#fff;padding:9px 19px;border-radius:999px;font-weight:800;opacity:0;transition:.22s;z-index:50;font-size:.88rem}
+#msg.on{opacity:1;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div><h1>🎛️ 講師後台　賣貨便會員經營 × AI 實戰工作坊<span class="sub">台北場 2026/11/6 · 犇亞會議中心 15F CDE　｜　台中場 2026/12/4 · 烏日集思會議中心 4F 富蘭克林廳</span></h1></div>
+  <div class="sp">
+    <input class="inp" id="cohort" style="width:132px" title="梯次（預設今天）">
+    <button class="btn sm g" id="reload">🔄 重新整理</button>
+    <a class="btn sm g" href="board.html" target="_blank" style="text-decoration:none">📺 投影</a>
+  </div>
+</div></header>
+
+<div class="wrap">
+  <div class="tabs">
+    <button data-s="sum" class="on">📊 總覽</button>
+    <button data-s="quiz">❓ 互動題</button>
+    <button data-s="prog">✅ 進度</button>
+    <button data-s="made">🧰 學員產出</button>
+    <button data-s="sub">📤 交件</button>
+    <button data-s="list">👥 學員名單</button>
+  </div>
+
+  <section data-s="sum" class="on">
+    <h2 class="t">今天的狀況</h2>
+    <div class="cards" id="sumCards"></div>
+    <h2 class="t">賣什麼的人來了</h2>
+    <div class="tw"><table id="catTable"></table></div>
+    <h2 class="t">各品牌</h2>
+    <div class="tw"><table id="brandTable"></table></div>
+  </section>
+
+  <section data-s="quiz">
+    <h2 class="t">互動題作答統計</h2>
+    <div class="warn red" id="ansNote"></div>
+    <div id="quizHost"></div>
+  </section>
+
+  <section data-s="prog">
+    <h2 class="t">開工前檢查（7 項）</h2>
+    <div id="prepItems"></div>
+    <h2 class="t">三段實作完成度</h2>
+    <div class="cards" id="progCards"></div>
+    <div class="tw" style="margin-top:12px"><table id="progTable"></table></div>
+    <h2 class="t">每一項的完成比例</h2>
+    <div class="tw"><table id="stepTable"></table></div>
+  </section>
+
+  <section data-s="made">
+    <h2 class="t">三層分群：學員設定的回購週期</h2>
+    <div class="tw"><table id="cycTable"></table></div>
+    <h2 class="t">15 秒腳本</h2>
+    <div id="scHost"></div>
+    <h2 class="t">30 天回購行動方案</h2>
+    <div id="planHost"></div>
+    <h2 class="t">LINE 費用試算與成效 KPI</h2>
+    <div class="tw"><table id="kpiTable"></table></div>
+  </section>
+
+  <section data-s="sub">
+    <h2 class="t">交件</h2>
+    <div class="row">
+      <select class="inp" id="subFilter"><option value="">全部</option></select>
+      <button class="btn sm g" id="csvSub">⬇️ 匯出 CSV</button>
+      <span class="note" id="subCount"></span>
+    </div>
+    <div id="subHost"></div>
+  </section>
+
+  <section data-s="list">
+    <h2 class="t">學員名單</h2>
+    <div class="row"><button class="btn sm g" id="csvList">⬇️ 匯出 CSV</button><span class="note" id="listCount"></span></div>
+    <div class="tw"><table id="listTable"></table></div>
+  </section>
+</div>
+
+<div id="msg"></div>
+
+<script>
+(function(){
+'use strict';
+var SUPA='https://dpglkagtzdwiovzbtase.supabase.co';
+var KEY='sb_publishable_Tuj9p4DXvO-jEqVcBnumTg_TqZ1NnRu';
+var COURSE='myship-member-workshop';
+var ANS={q2:'B',q3:'B',q4:'B',q5:'D',q6:'C',q7:'A'};
+var QT={
+  fake:{t:'破冰：四件事哪一件是假的',o:[['1','Podcast 100 集'],['2','虛擬貨幣 1 億美金'],['3','史瓦帝尼演講'],['4','每年演講 200 場以上']]},
+  q1:{t:'互動 1：上一次主動聯絡老客人',o:[['A','這一週'],['B','這個月'],['C','三個月內'],['D','想不起來了']]},
+  cycle:{t:'加碼：知道顧客多久回購一次嗎',o:[['A','憑感覺估'],['B','看幾位熟客手動推算'],['C','用訂單算平均間隔天數'],['D','沒算過']]},
+  q2:{t:'互動 2：最該今天優先喚醒的客人',o:[['A','上週第一單的新客'],['B','買 5 次 4,800 元，4 個月前'],['C','一年前 1 次 200 元'],['D','每週下單的鐵粉']]},
+  q3:{t:'互動 3：鐵粉 VIP 最好的誘因',o:[['A','全館 85 折'],['B','新品搶先＋限量預留'],['C','免運券一張'],['D','不用給']]},
+  q4:{t:'互動 4：LINE 輕用量每月免費幾則',o:[['A','500 則'],['B','200 則'],['C','1,000 則'],['D','3,000 則']]},
+  q5:{t:'互動 5：「全館 85 折」少了哪個要素',o:[['A','叫得出你'],['B','回來的理由'],['C','期限'],['D','以上都少了']]},
+  q6:{t:'互動 6：15 秒前 3 秒放什麼',o:[['A','品牌 logo'],['B','店名自我介紹'],['C','最吸睛畫面或痛點問句'],['D','完整價格表']]},
+  q7:{t:'互動 7：哪句違反食品廣告規範',o:[['A','血糖穩穩不用怕'],['B','手作少糖小確幸'],['C','冷凍店到店'],['D','11/30 前折 50 元']]}
+};
+var PREP=['付費 AI 已登入','個人網路已連上','電力','3 張商品照','訂單資料','加入成發 LINE 社群','先註冊創流'];
+var M1=['上傳訂單或用練習檔','貼上 P1 看三層','門檻有請 GPT 調整','貼上 P2 產策略圖','上傳社群成果 1'];
+var M2=['建好專案或 Gem','P3 貼進專案指示','貼 P4 排行事曆','貼 P5 挑一版推播','上傳社群成果 2'];
+var M3=['貼 P7 產腳本','創流做出素材','貼 P9 寫文案','做過法規自檢','上傳社群成果 3'];
+var FINAL=['四份成果都交了','方案寫清楚四要素','指標有寫數字','列出明天 3 件事','附一句第一件要做的事'];
+var TASKNA={m1:'成果 1 策略圖',m2:'成果 2 行事曆＋推播',m3:'成果 3 影音企劃',m4:'成果 4 30 天方案',
+  push:'喚醒推播自檢',sc:'15 秒腳本',plan:'30 天方案',extra:'補充或提問'};
+
+function H(){return {apikey:KEY,Authorization:'Bearer '+KEY};}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+function q(s){return document.querySelector(s);}
+function toast(m){var e=q('#msg');e.textContent=m;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('on');},2200);}
+function fmt(s){try{return new Date(s).toLocaleString('zh-TW',{hour12:false,month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
+function today(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+function cohort(){return (q('#cohort').value||'').trim()||today();}
+function pct(a,b){return b?Math.round(a/b*100):0;}
+function nf(n){return String(Math.round(n||0)).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+function csv(name,rows){
+  var s=rows.map(function(r){return r.map(function(c){var v=String(c==null?'':c).replace(/"/g,'""');return /[",\n]/.test(v)?('"'+v+'"'):v;}).join(',');}).join('\r\n');
+  var b=new Blob(['﻿'+s],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},800);
+}
+function qz(s){return (s&&s.quiz&&typeof s.quiz==='object')?s.quiz:{};}
+function rightOf(s){var o=qz(s);return Object.keys(ANS).filter(function(k){return o[k]===ANS[k];}).length;}
+function answeredOf(s){var o=qz(s);return Object.keys(ANS).filter(function(k){return o[k];}).length;}
+function arr(s,k){var a=qz(s)[k];return Array.isArray(a)?a:[];}
+function doneN(s,k){return arr(s,k).filter(Boolean).length;}
+
+var D={students:[],subs:[]};
+async function get(path){
+  var r=await fetch(SUPA+'/rest/v1/'+path,{headers:H()});
+  if(!r.ok)throw new Error(r.status);
+  return await r.json();
+}
+async function loadAll(){
+  var c=cohort(), base='course=eq.'+encodeURIComponent(COURSE)+'&cohort=eq.'+encodeURIComponent(c);
+  try{
+    var a=await Promise.all([
+      get('lw_line_students?'+base+'&select=code,name,office,quiz,commit_checks,created_at&order=created_at.asc'),
+      get('lw_workshop_submissions?'+base+'&select=id,team,submitter,task,kind,content,image_url,created_at&order=created_at.desc')
+    ]);
+    D.students=a[0]||[]; D.subs=a[1]||[];
+    renderAll();
+    toast('已更新：'+D.students.length+' 人報到、'+D.subs.length+' 筆交件');
+  }catch(e){toast('讀取失敗：'+e.message);}
+}
+
+/* ---- 總覽 ---- */
+function renderSum(){
+  var st=D.students, sub=D.subs;
+  var who={}; sub.forEach(function(x){who[x.submitter]=1;});
+  var ansTot=0, ansRight=0;
+  st.forEach(function(s){ansTot+=answeredOf(s);ansRight+=rightOf(s);});
+  var m1=st.filter(function(s){return doneN(s,'m1')===5;}).length;
+  var m2=st.filter(function(s){return doneN(s,'m2')===5;}).length;
+  var m3=st.filter(function(s){return doneN(s,'m3')===5;}).length;
+  q('#sumCards').innerHTML=[
+    ['報到人數',st.length,''],['交件人數',Object.keys(who).length,'b'],['交件總數',sub.length,'g'],
+    ['全場答對率',pct(ansRight,ansTot)+'%','o'],
+    ['實作一完成',m1+' 人',''],['實作二完成',m2+' 人',''],['實作三完成',m3+' 人','']
+  ].map(function(x){return '<div class="c '+x[2]+'"><b>'+x[1]+'</b><span>'+x[0]+'</span></div>';}).join('');
+
+  var cat={};
+  st.forEach(function(s){var c=qz(s).cat||'未填';cat[c]=(cat[c]||0)+1;});
+  var ck=Object.keys(cat).sort(function(a,b){return cat[b]-cat[a];});
+  q('#catTable').innerHTML='<tr><th>商品類別</th><th>人數</th><th>比例</th></tr>'
+    +(ck.length?ck.map(function(k){return '<tr><td>'+esc(k)+'</td><td>'+cat[k]+'</td><td><div class="bar o"><i style="width:'+pct(cat[k],st.length)+'%"></i></div>'+pct(cat[k],st.length)+'%</td></tr>';}).join('')
+      :'<tr><td colspan="3">還沒有資料</td></tr>');
+
+  var by={};
+  st.forEach(function(s){var d=s.office||'未填品牌';by[d]=by[d]||{n:0,r:0,a:0,u:0};by[d].n++;by[d].r+=rightOf(s);by[d].a+=answeredOf(s);});
+  sub.forEach(function(x){var d=x.team||'未填品牌';by[d]=by[d]||{n:0,r:0,a:0,u:0};by[d].u++;});
+  var rows=Object.keys(by).map(function(k){return {d:k,x:by[k]};});
+  rows.sort(function(a,b){return b.x.u-a.x.u||b.x.n-a.x.n;});
+  q('#brandTable').innerHTML='<tr><th>品牌</th><th>人數</th><th>交件</th><th>作答</th><th>答對率</th></tr>'
+    +(rows.length?rows.map(function(r){return '<tr><td><b>'+esc(r.d)+'</b></td><td>'+r.x.n+'</td><td>'+r.x.u+'</td><td>'+r.x.a+'</td><td class="pct">'+pct(r.x.r,r.x.a)+'%</td></tr>';}).join('')
+      :'<tr><td colspan="5">還沒有人報到</td></tr>');
+}
+
+/* ---- 互動題 ---- */
+function renderQuiz(){
+  var st=D.students;
+  var seq=Object.keys(ANS).map(function(k){return ANS[k];});
+  q('#ansNote').innerHTML='<b>🚨 互動 2、3、4 連續三題正解都是 B。</b>'
+    +'六題計分題正解依序是 <b>'+seq.join(' ')+'</b>（B 3 題、C 1 題、D 1 題、A 1 題）。'
+    +'這是簡報原本的選項順序，網站上跟簡報一致所以沒有改。'
+    +'<b>口頭唸題時記得換順序</b>（例如先唸 C、再唸 A），不然學員第三題就會發現猜 B 準。';
+
+  q('#quizHost').innerHTML=Object.keys(QT).map(function(k){
+    var cnt={},n=0;
+    st.forEach(function(s){var v=qz(s)[k];if(v){cnt[v]=(cnt[v]||0)+1;n++;}});
+    var right=ANS[k];
+    var head='<div class="qq">'+esc(QT[k].t)+'　<span class="note" style="font-weight:400">'+n+' 人作答'
+      +(right?('　答對 '+(cnt[right]||0)+' 人（'+pct(cnt[right]||0,n)+'%）'):'　（無標準答案）')+'</span></div>';
+    var opts=QT[k].o.map(function(o){
+      var c=cnt[o[0]]||0, p=pct(c,n);
+      return '<div class="opt"><span class="k'+(right===o[0]?' ok':'')+'">'+o[0]+'</span>'
+        +'<span class="lb">'+esc(o[1])+(right===o[0]?' ✅':'')+'</span>'
+        +'<span style="flex:0 0 120px"><span class="bar'+(right===o[0]?'':' o')+'"><i style="width:'+p+'%"></i></span></span>'
+        +'<span class="pc">'+c+' 人 '+p+'%</span></div>';
+    }).join('');
+    return '<div class="q">'+head+opts+'</div>';
+  }).join('');
+}
+
+/* ---- 進度 ---- */
+function renderProg(){
+  var st=D.students;
+  q('#prepItems').innerHTML='<div class="tw"><table><tr><th>開工前檢查</th><th>完成人數</th><th>比例</th></tr>'
+    +PREP.map(function(t,i){
+      var n=st.filter(function(s){return arr(s,'prep')[i];}).length;
+      return '<tr><td>'+(i+1)+'. '+esc(t)+'</td><td>'+n+'</td><td><div class="bar"><i style="width:'+pct(n,st.length)+'%"></i></div>'+pct(n,st.length)+'%</td></tr>';
+    }).join('')+'</table></div>';
+
+  var sets=[['m1',M1,'實作一'],['m2',M2,'實作二'],['m3',M3,'實作三'],['fin',FINAL,'交件自檢']];
+  q('#progCards').innerHTML=sets.map(function(s){
+    var done=st.filter(function(x){return doneN(x,s[0])===s[1].length;}).length;
+    var any=st.filter(function(x){return doneN(x,s[0])>0;}).length;
+    return '<div class="c"><b>'+done+' / '+any+'</b><span>'+s[2]+'　全部完成 / 有開始</span></div>';
+  }).join('');
+
+  var rows=st.slice().sort(function(a,b){
+    return (doneN(b,'m1')+doneN(b,'m2')+doneN(b,'m3'))-(doneN(a,'m1')+doneN(a,'m2')+doneN(a,'m3'));
+  });
+  q('#progTable').innerHTML='<tr><th>學員</th><th>品牌</th><th>實作一</th><th>實作二</th><th>實作三</th><th>交件自檢</th></tr>'
+    +(rows.length?rows.map(function(s){
+      function dots(k,arr2){return arr2.map(function(_,i){return '<span class="dot'+(arr(s,k)[i]?' on':'')+'"></span>';}).join('');}
+      return '<tr><td><b>'+esc(s.name||s.code)+'</b></td><td>'+esc(s.office||'')+'</td>'
+        +'<td>'+dots('m1',M1)+'</td><td>'+dots('m2',M2)+'</td><td>'+dots('m3',M3)+'</td><td>'+dots('fin',FINAL)+'</td></tr>';
+    }).join(''):'<tr><td colspan="6">還沒有資料</td></tr>');
+
+  var head='<tr><th>項目</th><th>完成人數</th><th>比例</th></tr>';
+  var body='';
+  sets.forEach(function(s){
+    s[1].forEach(function(t,i){
+      var n=st.filter(function(x){return arr(x,s[0])[i];}).length;
+      body+='<tr><td>'+s[2]+'　'+esc(t)+'</td><td>'+n+'</td><td><div class="bar"><i style="width:'+pct(n,st.length)+'%"></i></div>'+pct(n,st.length)+'%</td></tr>';
+    });
+  });
+  q('#stepTable').innerHTML=head+body;
+}
+
+/* ---- 學員產出 ---- */
+function card(name,brand,inner,tag){
+  return '<div class="sub2"><div class="hd"><span class="tag '+(tag||'t')+'">'+esc(name)+'</span>'
+    +'<span class="note" style="margin:0">'+esc(brand||'未填品牌')+'</span></div>'+inner+'</div>';
+}
+function renderMade(){
+  var st=D.students;
+  var cyc={};
+  st.forEach(function(s){var c=qz(s).cyc;if(c)cyc[c]=(cyc[c]||0)+1;});
+  var ck=Object.keys(cyc).sort(function(a,b){return a-b;});
+  q('#cycTable').innerHTML='<tr><th>回購週期</th><th>人數</th><th>這代表什麼</th></tr>'
+    +(ck.length?ck.map(function(k){
+      var hint=+k<=14?'生鮮、麵包這類高頻商品':(+k<=30?'甜點、咖啡這類常見週期':(+k<=60?'保養品、茶葉':'飾品、童裝這類耐用品'));
+      return '<tr><td><b>'+k+' 天</b></td><td>'+cyc[k]+'</td><td>'+hint+'，沉睡門檻 '+(k*2)+' 天</td></tr>';
+    }).join(''):'<tr><td colspan="3">還沒有人用計算機</td></tr>');
+
+  var sc=st.filter(function(s){var o=qz(s).sc||{};return (o.hook||'').trim()||(o.proof||'').trim()||(o.cta||'').trim();});
+  q('#scHost').innerHTML=sc.length?sc.map(function(s){
+    var o=qz(s).sc||{};
+    return card(s.name||s.code,s.office,'<div class="body">【對象】'+esc(o.who||'未選')
+      +'\n【0 到 3 秒】'+((o.hook||'').trim()||'（空）')
+      +'\n【3 到 10 秒】'+((o.proof||'').trim()||'（空）')
+      +'\n【10 到 15 秒】'+((o.cta||'').trim()||'（空）')+'</div>','b');
+  }).join(''):'<p class="note">還沒有人填。</p>';
+
+  var pl=st.filter(function(s){var o=qz(s).plan||{};return Object.keys(o).some(function(k){return (o[k]||'').trim();});});
+  q('#planHost').innerHTML=pl.length?pl.map(function(s){
+    var o=qz(s).plan||{};
+    return card(s.name||s.code,s.office,'<div class="body">【活動名稱】'+((o.name||'').trim()||'（空）')
+      +'\n【對象】'+((o.who||'').trim()||'（空）')
+      +'\n【誘因＋期限】'+((o.offer||'').trim()||'（空）')
+      +'\n【管道與時程】'+((o.ch||'').trim()||'（空）')
+      +'\n【成功指標】'+((o.kpi||'').trim()||'（空）')
+      +'\n【第一件要做的事】'+((o.first||'').trim()||'（空）')+'</div>','g');
+  }).join(''):'<p class="note">還沒有人填。</p>';
+
+  var kp=st.filter(function(s){var o=qz(s).kpi||{};return o.sent;});
+  var ln=st.filter(function(s){var o=qz(s).line||{};return o.f;});
+  q('#kpiTable').innerHTML='<tr><th>學員</th><th>LINE 好友</th><th>方案</th><th>要推給</th><th>推播人數</th><th>喚醒回購率</th></tr>'
+    +((kp.length||ln.length)?st.filter(function(s){return (qz(s).kpi||{}).sent||(qz(s).line||{}).f;}).map(function(s){
+      var l=qz(s).line||{}, k=qz(s).kpi||{};
+      var tn={light:'輕用量',mid:'中用量',high:'高用量'}[l.t]||'';
+      var rr=k.sent?((k.buy||0)/k.sent*100).toFixed(1)+'%':'';
+      return '<tr><td><b>'+esc(s.name||s.code)+'</b></td><td>'+(l.f?nf(l.f)+' 人':'')+'</td><td>'+tn+'</td><td>'+(l.s?nf(l.s)+' 人':'')+'</td><td>'+(k.sent?nf(k.sent):'')+'</td><td class="pct">'+rr+'</td></tr>';
+    }).join(''):'<tr><td colspan="6">還沒有人用試算</td></tr>');
+}
+
+/* ---- 交件 ---- */
+function renderSub(){
+  var sel=q('#subFilter'), cur=sel.value;
+  var ks=Object.keys(TASKNA).filter(function(k){return D.subs.some(function(x){return x.task===k;});});
+  sel.innerHTML='<option value="">全部（'+D.subs.length+'）</option>'
+    +ks.map(function(k){var n=D.subs.filter(function(x){return x.task===k;}).length;
+      return '<option value="'+k+'"'+(cur===k?' selected':'')+'>'+TASKNA[k]+'（'+n+'）</option>';}).join('');
+  var list=cur?D.subs.filter(function(x){return x.task===cur;}):D.subs;
+  q('#subCount').textContent=list.length+' 筆';
+  q('#subHost').innerHTML=list.length?list.map(function(x){
+    var body=x.kind==='image'
+      ? '<a href="'+esc(x.image_url)+'" target="_blank" rel="noopener"><img src="'+esc(x.image_url)+'" loading="lazy" alt="交件"></a>'
+      : '<div class="body">'+esc(x.content||'')+'</div>';
+    return '<div class="sub2"><div class="hd"><span class="tag '+(x.kind==='image'?'b':'t')+'">'+esc(TASKNA[x.task]||x.task)+'</span>'
+      +'<span class="who">'+esc(x.submitter||'')+'</span><span class="note" style="margin:0">'+esc(x.team||'')+'</span>'
+      +'<span class="tm">'+fmt(x.created_at)+'</span></div>'+body+'</div>';
+  }).join(''):'<p class="note">還沒有交件。學員主要交到成發 LINE 社群，這裡是網站備援。</p>';
+}
+
+/* ---- 名單 ---- */
+function renderList(){
+  var st=D.students.slice();
+  var up={}; D.subs.forEach(function(x){up[x.submitter]=(up[x.submitter]||0)+1;});
+  st.sort(function(a,b){return rightOf(b)-rightOf(a)||(up[b.name]||0)-(up[a.name]||0);});
+  q('#listCount').textContent=st.length+' 人';
+  q('#listTable').innerHTML='<tr><th>#</th><th>名字</th><th>品牌</th><th>類別</th><th>答對</th><th>作答</th><th>實作</th><th>交件</th><th>報到時間</th></tr>'
+    +(st.length?st.map(function(s,i){
+      var m=doneN(s,'m1')+doneN(s,'m2')+doneN(s,'m3');
+      return '<tr><td>'+(i+1)+'</td><td><b>'+esc(s.name||s.code)+'</b></td><td>'+esc(s.office||'')+'</td>'
+        +'<td>'+esc(qz(s).cat||'')+'</td><td class="pct">'+rightOf(s)+' / 6</td><td>'+answeredOf(s)+'</td>'
+        +'<td>'+m+' / 15</td><td>'+(up[s.name]||0)+'</td><td>'+fmt(s.created_at)+'</td></tr>';
+    }).join(''):'<tr><td colspan="9">還沒有人報到</td></tr>');
+}
+
+function renderAll(){renderSum();renderQuiz();renderProg();renderMade();renderSub();renderList();}
+
+q('#cohort').value=new URLSearchParams(location.search).get('c')||today();
+q('#reload').addEventListener('click',loadAll);
+q('#cohort').addEventListener('change',loadAll);
+q('#subFilter').addEventListener('change',renderSub);
+document.querySelectorAll('.tabs button').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.tabs button').forEach(function(x){x.classList.toggle('on',x===b);});
+    document.querySelectorAll('section').forEach(function(s){s.classList.toggle('on',s.getAttribute('data-s')===b.getAttribute('data-s'));});
+  });
+});
+q('#csvSub').addEventListener('click',function(){
+  var rows=[['時間','項目','學員','品牌','型態','內容或圖片網址']];
+  D.subs.forEach(function(x){rows.push([fmt(x.created_at),TASKNA[x.task]||x.task,x.submitter,x.team,x.kind,x.kind==='image'?x.image_url:(x.content||'')]);});
+  csv('交件_'+cohort()+'.csv',rows);
+});
+q('#csvList').addEventListener('click',function(){
+  var up={}; D.subs.forEach(function(x){up[x.submitter]=(up[x.submitter]||0)+1;});
+  var rows=[['名字','品牌','類別','答對','作答','回購週期','實作一','實作二','實作三','交件自檢','交件數','報到時間']];
+  D.students.forEach(function(s){rows.push([s.name||s.code,s.office||'',qz(s).cat||'',rightOf(s),answeredOf(s),qz(s).cyc||'',
+    doneN(s,'m1'),doneN(s,'m2'),doneN(s,'m3'),doneN(s,'fin'),up[s.name]||0,fmt(s.created_at)]);});
+  csv('學員名單_'+cohort()+'.csv',rows);
+});
+loadAll();
+setInterval(loadAll,30000);
+})();
+</script>
+</body>
+</html>

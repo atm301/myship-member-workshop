@@ -1,0 +1,165 @@
+<!-- ===================== 單元三 ===================== -->
+<section class="tab-section" data-tab="u3"><div class="wrap">
+  <span class="sec-tag">單元三　15:30 到 16:30</span>
+  <h2 class="sec-title">講得出對的內容：<span class="em">AI 影音與促銷場景</span></h2>
+  <p class="lead">問卷裡有 14 位賣家最想解決影片和短影音，16 位想解決文案圖片海報。這一段兩個都處理。</p>
+
+  <h3 class="h3">賣場痛點：影片最想學，也最容易卡住</h3>
+  <div class="grid g3">
+    <div class="card x"><h3>🔍 不知道拍什麼</h3><p>每支都想講全部，結果什麼都沒講清楚。</p></div>
+    <div class="card x"><h3>▶️ 拍了沒人看</h3><p>前 3 秒沒有抓住人，就被滑走。</p></div>
+    <div class="card x"><h3>🏪 看了不知道去哪買</h3><p>影片和賣場之間有斷點。</p></div>
+  </div>
+  <div class="callout"><b>梁雞商行第三代的觀察：</b>在現在的電商環境中，單純文字介紹已經很難吸引消費者，影片才是更有效的溝通方式。
+  <br><span class="muted-note">資料出處：賣貨便社群e學院：梁雞商行專訪；報名問卷</span></div>
+
+  <h3 class="h3">影音也要分層：每一層要回答的問題不一樣</h3>
+  <div class="tw"><table>
+    <tr><th>對象</th><th>影片要回答</th><th>內容方向</th><th>範例（手作甜點）</th></tr>
+    <tr><td><b>鐵粉 VIP</b></td><td>我是不是自己人？</td><td>幕後、新品搶先、感謝</td><td>新口味試做的第一刀，只在 LINE 給老朋友看</td></tr>
+    <tr><td><b>回購客</b></td><td>還能怎麼吃、怎麼用？</td><td>使用情境、搭配、保存</td><td>磅蛋糕回烤 30 秒的吃法，配一杯熱紅茶</td></tr>
+    <tr><td><b>沉睡客</b></td><td>為什麼現在要回來？</td><td>新品＋期限＋平台免運</td><td>冬季限定登場，免運券領取倒數</td></tr>
+    <tr><td><b>新客（公開）</b></td><td>這家可以信任嗎？</td><td>製作過程、檢驗、真實評價</td><td>手作過程加上打包出貨的畫面</td></tr>
+  </table></div>
+  <div class="callout ok"><b>同一個商品，拍給不同層的人看，就是不同的影片。</b></div>
+
+  <h3 class="h3">15 秒腳本的三段結構</h3>
+  <div class="grid g3">
+    <div class="card o"><h3>0 到 3 秒｜鉤子</h3><p>最吸睛的畫面，或一句痛點問句。<br><b>例：</b>「冷凍蛋糕，也能吃出剛出爐的香？」</p></div>
+    <div class="card a"><h3>3 到 10 秒｜證據與情境</h3><p>做法、口感、使用場景，讓人相信。<br><b>例：</b>切面特寫、回烤 30 秒、熱氣冒出。</p></div>
+    <div class="card dk"><h3>10 到 15 秒｜誘因與行動</h3><p>期限＋去哪買，一次只給一個行動。<br><b>例：</b>「11/30 前回歸碼折 50，點連結到賣貨便」</p></div>
+  </div>
+  <div class="callout warn"><b>字卡規則：</b>每行 12 字以內；大部分人靜音滑影片，字卡要能獨立看懂。最後一格一定要有「去哪買」：賣貨便賣場連結放在說明欄第一行。</div>
+
+  <div class="poll" id="poll_q6"></div>
+
+  <h3 class="h3">三鏡頭最小可行做法：手機就能開拍</h3>
+  <div class="grid g3">
+    <div class="card o"><h3>🔍 鏡頭 1　特寫</h3><p>切面、光澤、紋理；近拍、自然光；3 至 5 秒。</p></div>
+    <div class="card a"><h3>👥 鏡頭 2　情境</h3><p>吃、穿、戴、開箱；只拍手部也可以；3 至 5 秒。</p></div>
+    <div class="card g"><h3>📦 鏡頭 3　收尾</h3><p>老闆入鏡或打包畫面；字卡寫期限與去哪買；3 至 5 秒。</p></div>
+  </div>
+  <div class="callout bad"><b>AI 的角色：</b>把實拍照變成會動的素材、補一個情境鏡頭。<b>商品本身一定用實拍，畫面要和實際商品一致。</b></div>
+
+  <h3 class="h3">✍️ 15 秒腳本填寫器</h3>
+  <p class="lead">三格填完就是一支可以拍的腳本，複製後可以直接貼給 GPT 接著補分鏡。</p>
+  <div class="fill">
+    <label for="sc_who">這支拍給誰看</label>
+    <select id="sc_who">
+      <option value="沉睡客">沉睡客　為什麼現在要回來</option>
+      <option value="回購客">回購客　還能怎麼吃、怎麼用</option>
+      <option value="鐵粉 VIP">鐵粉 VIP　我是不是自己人</option>
+      <option value="新客">新客　這家可以信任嗎</option>
+    </select>
+    <label for="sc_hook">0 到 3 秒　鉤子（最吸睛的畫面，或一句痛點問句）</label>
+    <input id="sc_hook" type="text" maxlength="40" placeholder="例如：冷凍蛋糕，也能吃出剛出爐的香？">
+    <label for="sc_proof">3 到 10 秒　證據與情境（做法、口感、使用場景）</label>
+    <input id="sc_proof" type="text" maxlength="60" placeholder="例如：切面特寫、回烤 30 秒、熱氣冒出">
+    <label for="sc_cta">10 到 15 秒　誘因＋期限＋去哪買</label>
+    <input id="sc_cta" type="text" maxlength="60" placeholder="例如：11/30 前回歸碼 BACK50 折 50 元，點連結到賣貨便">
+    <div class="hero-btns" style="margin-top:12px">
+      <button class="btn btn-primary btn-sm" id="scCopy" type="button">📋 複製腳本</button>
+      <button class="btn btn-ghost btn-sm" id="scDemo" type="button">填入範例</button>
+      <button class="btn btn-ghost btn-sm" id="scSend" type="button">📤 當成交件送出</button>
+      <span class="muted-note" id="scStatus"></span>
+    </div>
+    <div id="scOut" class="out">三格填完，這裡會出現可以複製的腳本。</div>
+  </div>
+
+  <h3 class="h3">賣家案例：梁雞商行，老闆入鏡拍日常，連結直通賣貨便</h3>
+  <div class="callout"><b>影片拍的是信任，不只是商品。</b>
+  老闆本人入鏡，2025 年開始拍短影音，讓顧客熟悉這位市場老闆；分享料理方式、親子食譜，把雞肉放進日常餐桌；短影音或貼文附上賣貨便購買連結，看完直接下單。林記魚丸則用「魚丸葛格」角色拍短影音，像朋友一樣對話。
+  <br><span class="muted-note">資料出處：賣貨便社群e學院：梁雞商行、林記魚丸專訪</span></div>
+
+  <h3 class="h3">今天的影音工具分工</h3>
+  <div class="grid g4">
+    <div class="card o"><h3>🤖 付費 GPT　企劃大腦</h3><p>腳本、三鏡頭分鏡、生成指令、促銷文案。</p></div>
+    <div class="card a"><h3>🎞️ 創流 AI　學員實作</h3><p>商品照變動態素材、帶貨影片，手機也能操作。</p></div>
+    <div class="card b"><h3>✨ Gemini Omni　小圭示範</h3><p>文字或圖片生成影片，含聲音。</p></div>
+    <div class="card g"><h3>📤 剪輯上架　最後一哩</h3><p>手機剪輯加字卡，發 LINE 分眾、IG、賣場。</p></div>
+  </div>
+  <div class="callout warn"><b>現場網路有限：</b>先用 GPT 把企劃寫好，再生成；影片先做 480P 試，滿意再做高畫質。</div>
+
+  <h3 class="h3">創流 AI：為行銷而生的圖片與影片平台</h3>
+  <div class="callout ok">
+    <b>🎬 電商賣家會用到的功能：</b>帶貨影片導演室（給產品照或產品網址，AI 規劃帶貨影片，支援六種語言）、產品圖生成加速器（上傳產品圖，一次規劃 9 張電商詳情圖）、圖片與影片生成（整合 GPT Image、Nano Banana、Kling、Seedance 等模型）。
+    <div class="hero-btns" style="margin-top:12px">
+      <a class="btn btn-primary" id="clLink" href="https://aivideospeed.com/" target="_blank" rel="noopener">🎬 開啟創流 AI →</a>
+    </div>
+    <p class="muted-note" style="margin-top:9px">⚠️ 在 LINE 裡面開會擋 Google 登入，請改用 Chrome 或 Safari。先點連結，再在同一個瀏覽器用 Google 登入，確認帳號裡有註冊贈點。</p>
+  </div>
+  <div class="tw sm"><table>
+    <tr><th>要做什麼</th><th>規格</th><th>扣點</th><th>約合</th></tr>
+    <tr><td>一張 AI 圖片</td><td>1K 解析度、gpt-image-2</td><td>12 點</td><td>NT$3</td></tr>
+    <tr><td>一張高解析海報</td><td>2K 解析度、gpt-image-2</td><td>20 點</td><td>NT$5</td></tr>
+    <tr><td><b>10 秒短影片</b></td><td>480P、Seedance 2 Mini</td><td><b>80 點</b></td><td>NT$20</td></tr>
+    <tr><td>10 秒高畫質影片</td><td>720P、Kling 3.0</td><td>280 點</td><td>NT$70</td></tr>
+  </table></div>
+  <div class="callout"><b>點數規則：</b>1 元＝4 點，最低 NT$125 起；註冊送 100 點，贈點 45 天到期；買到的點數不會過期；生成失敗自動退點。
+  <br><b>100 點約可做：</b>1 支 10 秒 480P 短片（80 點）＋1 張圖（12 點）。
+  <br><span class="muted-note">點數不夠或網路太慢：先交企劃與文案，影片回家用同一段指令做。資料出處：創流 AI 定價頁（2026/11/5 查詢）</span></div>
+
+  <h3 class="h3">小圭示範：Gemini Omni，連聲音一起生成</h3>
+  <div class="grid g2">
+    <div class="card b"><h3>🎞️ 文字或圖片生成影片</h3><p>也能指定第一幀和最後一幀，讓畫面接得上。影片依提示生成對白、音效、環境音或音樂。</p></div>
+    <div class="card b"><h3>⏱️ 單段 4 至 10 秒</h3><p>付費方案可延伸到 40 秒、最高 1080p。可在 Gemini App、Google Flow、YouTube Shorts 使用。</p></div>
+  </div>
+  <div class="callout warn"><b>要注意：</b>每段最長 10 秒，跨場景時人物和環境不一定一致；所以先用 GPT 寫好三鏡頭，<b>一個鏡頭生成一段</b>，比一次生成整支片更穩。
+  <br><span class="muted-note">資料出處：Zapier〈Gemini Omni〉，2026/10/26（版本：Gemini Omni 1.1 Flash，功能以官方介面為準）</span></div>
+
+  <h3 class="h3">高轉換促銷文案：五段公式</h3>
+  <div class="flow">
+    <span class="n">1 對誰</span><span class="ar">▶</span>
+    <span class="n lite">2 場景或痛點</span><span class="ar">▶</span>
+    <span class="n lite">3 證據</span><span class="ar">▶</span>
+    <span class="n lite">4 誘因＋期限</span><span class="ar">▶</span>
+    <span class="n lite">5 一個行動</span>
+  </div>
+  <div class="callout ok"><b>範例（回購客）：</b>上次買磅蛋糕的你（對誰），週末早餐總是來不及？（場景）冷凍保存，回烤 30 秒就有剛出爐的香，每一條都是當天手作（證據）。這週加購司康組合價 199 元，11/30 前（誘因＋期限）。點連結到賣貨便下單（一個行動）。</div>
+
+  <h3 class="h3">⚖️ 上架前的法規紅線：貼上文案自己先檢查</h3>
+  <p class="lead">食品不能宣稱醫療效能、化粧品不能誇大、少用絕對用語。貼進來先掃一次，再送上架。</p>
+  <div class="fill">
+    <label for="lawIn">你的促銷文案</label>
+    <textarea id="lawIn" placeholder="把你寫好的促銷文案貼進來"></textarea>
+    <div class="hero-btns" style="margin-top:10px">
+      <button class="btn btn-primary btn-sm" id="lawBtn" type="button">⚖️ 掃一次法規紅線</button>
+      <button class="btn btn-ghost btn-sm" id="lawDemo" type="button">填入有問題的範例</button>
+      <span class="muted-note" id="lawStatus"></span>
+    </div>
+    <div id="lawOut"></div>
+  </div>
+  <p class="muted-note">這個檢查器只比對常見的高風險字眼，不是法律意見。真的要上架，請再用提示詞 P9 的法規自檢，或工具箱的「電商法規檢查器」。資料出處：賣貨便最新資訊：法規宣導公告；食品安全衛生管理法第 28 條。</p>
+
+  <div class="poll" id="poll_q7"></div>
+
+  <h3 class="h3">📤 實作三：15 秒企劃＋動態素材＋促銷文案</h3>
+  <div class="card o">
+    <h3>⏱️ 25 分鐘</h3>
+    <ol style="margin:10px 0 0 20px;font-size:.92rem;line-height:1.9">
+      <li>回到「我的賣場營運」專案，開新對話，貼上提示詞 <b>P7</b></li>
+      <li>挑一個最適合 AI 補的鏡頭，打開創流選「圖片生成影片」</li>
+      <li>上傳你的商品實拍照，貼上 <b>P8</b> 的動作指令，480P、5 至 10 秒</li>
+      <li>等待生成時，貼上 <b>P9</b>：寫促銷文案並做法規自檢</li>
+      <li>企劃截圖＋影片＋文案，上傳成發 LINE 社群（<b>品牌名＋成果 3</b>）</li>
+    </ol>
+    <div class="hero-btns">
+      <button class="btn btn-primary btn-sm" type="button" onclick="goPrompt('p7')">🤖 P7 短影音企劃</button>
+      <button class="btn btn-ghost btn-sm" type="button" onclick="goPrompt('p8')">🤖 P8 圖片轉影片</button>
+      <button class="btn btn-ghost btn-sm" type="button" onclick="goPrompt('p9')">🤖 P9 促銷文案＋法規自檢</button>
+    </div>
+  </div>
+  <div id="m3Chk"></div>
+
+  <h3 class="h3">影音與文案的免費工具</h3>
+  <div class="callout ok"><b>單元三可以搭配：</b>短影音腳本產生器（2 至 3 版腳本，每 3 至 5 秒一段，強調前 3 秒鉤子）、爆紅短影音拆解（貼上逐字稿，拆出鉤子與節奏）、電商法規檢查器（上架前檢查文案）、AI 電商文案產生器（一個商品，六種平台文案）。
+  <div class="hero-btns"><a class="btn btn-primary btn-sm" href="https://ecom.atmarketing.tw/tools/short-video-script" target="_blank" rel="noopener" data-own="1">開啟短影音腳本產生器 →</a></div></div>
+
+  <h3 class="h3">這一段的重點</h3>
+  <div class="grid g3">
+    <div class="card"><h3><span class="num">1</span>影音也要分層</h3><p>VIP 看幕後與搶先、回購客看用法、沉睡客看新品與期限、新客看信任。</p></div>
+    <div class="card"><h3><span class="num">2</span>15 秒＋三鏡頭</h3><p>鉤子、證據、行動；特寫、情境、收尾，手機就能拍，AI 補鏡頭。</p></div>
+    <div class="card"><h3><span class="num">3</span>GPT 企劃、創流生成</h3><p>文案用五段公式，上架前一定做法規自檢。</p></div>
+  </div>
+  <div class="card dk" style="margin-top:13px"><h3>💡 今天的心得</h3><p>影片不是拍給所有人看，是拍給<b>「下一個該回來的人」</b>看。</p></div>
+</div></section>
